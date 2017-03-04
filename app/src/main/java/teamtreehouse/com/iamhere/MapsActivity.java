@@ -150,13 +150,13 @@ public class MapsActivity extends FragmentActivity implements
             listeDesMarkers = new Hashtable<>();
         }
 
-        for (int i=1; i<=nombrePersonne;i++){
+        for (int i=0; i<nombrePersonne;i++){
             Double randomLat = random.nextDouble()*180-90;
             Double randomLon = random.nextDouble()*360-180;
 
             LatLng randomPosition = new LatLng(randomLat,randomLon);
-            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title("Membre " + i));
-            listeDesMarkers.put(i,m);
+            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title("Membre " + i+1));
+            listeDesMarkers.put(i+1,m);
         }
 
        /* //Comme je peux pas test avec mon tél je mais des positions random pour tester
