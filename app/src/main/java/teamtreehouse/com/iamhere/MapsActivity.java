@@ -39,7 +39,7 @@ import java.util.Set;
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, GoogleMap.OnMarkerClickListener {
 
     public static final String TAG = MapsActivity.class.getSimpleName();
 
@@ -80,9 +80,6 @@ public class MapsActivity extends FragmentActivity implements
 
 
         listeDesMarkers = new Hashtable<>();
-
-
-
 
 
     }
@@ -130,6 +127,8 @@ public class MapsActivity extends FragmentActivity implements
                 setUpMap();
             }
         }
+
+        mMap.setOnMarkerClickListener(this);
     }
 
     /**
@@ -145,13 +144,13 @@ public class MapsActivity extends FragmentActivity implements
         Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
         Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));
 
-        if(listeDesMarkers==null){
-            listeDesMarkers=new Hashtable<>();
+        if (listeDesMarkers == null) {
+            listeDesMarkers = new Hashtable<>();
         }
 
-        listeDesMarkers.put(1,m1);
-        listeDesMarkers.put(2,m2);
-        listeDesMarkers.put(3,m3);
+        listeDesMarkers.put(1, m1);
+        listeDesMarkers.put(2, m2);
+        listeDesMarkers.put(3, m3);
 
     }
 
@@ -164,13 +163,13 @@ public class MapsActivity extends FragmentActivity implements
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
 
-        if(listeDesMarkers.containsKey(0)){
+        if (listeDesMarkers.containsKey(0)) {
             listeDesMarkers.get(0).setPosition(latLng);
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title("You"));
-            listeDesMarkers.put(0,m);
+            listeDesMarkers.put(0, m);
 
         }
 
@@ -189,8 +188,7 @@ public class MapsActivity extends FragmentActivity implements
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-        else {
+        } else {
             handleNewLocation(location);
         }
     }
@@ -264,24 +262,23 @@ public class MapsActivity extends FragmentActivity implements
         }
     };
 
-    private Hashtable<Integer,Marker> listeDesMarkers;
+    private Hashtable<Integer, Marker> listeDesMarkers;
 
-    private void updateMarker(String data){
+    private void updateMarker(String data) {
 
         String id = null;
-        Double lat = null ;
+        Double lat = null;
         Double lon = null;
 
-        if(listeDesMarkers.containsKey(id)){
-            listeDesMarkers.get(id).setPosition(new LatLng(lat,lon));
+        if (listeDesMarkers.containsKey(id)) {
+            listeDesMarkers.get(id).setPosition(new LatLng(lat, lon));
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(10, 10))
                     .title("Position de " + id));
-            listeDesMarkers.put(Integer.getInteger(id),m);
+            listeDesMarkers.put(Integer.getInteger(id), m);
 
         }
-
 
 
     }
@@ -312,6 +309,40 @@ public class MapsActivity extends FragmentActivity implements
         filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
         filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
         registerReceiver(mUsbReceiver, filter);
+    }
+
+
+    public double distance(double lat_a, double lng_a, double lat_b, double lng_b) {
+        double earthRadius = 3958.75;
+        double latDiff = Math.toRadians(lat_b - lat_a);
+        double lngDiff = Math.toRadians(lng_b - lng_a);
+        double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
+                Math.cos(Math.toRadians(lat_a)) * Math.cos(Math.toRadians(lat_b)) *
+                        Math.sin(lngDiff / 2) * Math.sin(lngDiff / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = earthRadius * c;
+
+        int meterConversion = 1609;
+
+        return new Float(distance * meterConversion).floatValue();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+
+        Marker chef = listeDesMarkers.get(0);
+
+
+        LatLng posChef = chef.getPosition();
+
+        LatLng posMembre = marker.getPosition();
+
+        marker.setSnippet("est à : " + distance(posChef.latitude, posChef.longitude, posMembre.latitude, posMembre.longitude) + " m");
+
+
+        return false;
+
     }
 
     /*

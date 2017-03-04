@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="support-v4-23.2.0">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/res" />
-      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/libs/internal_impl-23.2.0.jar!/" />
-      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.0/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.android/build-cache/f57bde41ce193e372864d61efa0416f417b05685/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/f57bde41ce193e372864d61efa0416f417b05685/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/f57bde41ce193e372864d61efa0416f417b05685/output/jars/libs/internal_impl-23.2.0.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
