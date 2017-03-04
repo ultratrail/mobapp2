@@ -34,6 +34,7 @@ import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class MapsActivity extends FragmentActivity implements
@@ -139,18 +140,35 @@ public class MapsActivity extends FragmentActivity implements
      */
     private void setUpMap() {
 
-        //Comme je peux pas test avec mon tél je mais des positions random pour tester
-        Marker m1 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Membre 1"));
-        Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
-        Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));
+
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        int nombrePersonne= sharedPref.getInt(getString(R.string.nbMembre), 3);
+
+        Random random = new Random();
 
         if (listeDesMarkers == null) {
             listeDesMarkers = new Hashtable<>();
         }
 
+        for (int i=1; i<=nombrePersonne;i++){
+            Double randomLat = random.nextDouble()*180-90;
+            Double randomLon = random.nextDouble()*360-180;
+
+            LatLng randomPosition = new LatLng(randomLat,randomLon);
+            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title("Membre " + i));
+            listeDesMarkers.put(i,m);
+        }
+
+       /* //Comme je peux pas test avec mon tél je mais des positions random pour tester
+        Marker m1 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Membre 1"));
+        Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
+        Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));
+
+
+
         listeDesMarkers.put(1, m1);
         listeDesMarkers.put(2, m2);
-        listeDesMarkers.put(3, m3);
+        listeDesMarkers.put(3, m3);*/
 
     }
 
