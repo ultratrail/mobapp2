@@ -1,10 +1,22 @@
 package teamtreehouse.com.iamhere;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -15,7 +27,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.lang.ref.WeakReference;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -52,6 +71,20 @@ public class MapsActivity extends FragmentActivity implements
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+
+        // USB Section
+
+
+        mHandler = new MyHandler(this);
+
+
+        listeDesMarkers = new Hashtable<>();
+
+
+
+
+
     }
 
     @Override
@@ -106,7 +139,20 @@ public class MapsActivity extends FragmentActivity implements
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        //Comme je peux pas test avec mon tél je mais des positions random pour tester
+        Marker m1 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Membre 1"));
+        Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
+        Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));
+
+        if(listeDesMarkers==null){
+            listeDesMarkers=new Hashtable<>();
+        }
+
+        listeDesMarkers.put(1,m1);
+        listeDesMarkers.put(2,m2);
+        listeDesMarkers.put(3,m3);
+
     }
 
     private void handleNewLocation(Location location) {
@@ -117,12 +163,24 @@ public class MapsActivity extends FragmentActivity implements
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
+
+        if(listeDesMarkers.containsKey(0)){
+            listeDesMarkers.get(0).setPosition(latLng);
+        } else {
+            Marker m = mMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title("You"));
+            listeDesMarkers.put(0,m);
+
+        }
+
         //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
-        MarkerOptions options = new MarkerOptions()
+       /* MarkerOptions options = new MarkerOptions()
                 .position(latLng)
-                .title("I am here!");
+                .title("You!");
         
-        mMap.addMarker(options);
+        mMap.addMarker(options);*/
+
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
@@ -175,4 +233,125 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         handleNewLocation(location);
     }
+
+
+    // USB
+
+
+    /*
+    * Notifications from UsbService will be received here.
+    */
+    private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case UsbService.ACTION_USB_PERMISSION_GRANTED: // USB PERMISSION GRANTED
+                    Toast.makeText(context, "USB Ready", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_PERMISSION_NOT_GRANTED: // USB PERMISSION NOT GRANTED
+                    Toast.makeText(context, "USB Permission not granted", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_NO_USB: // NO USB CONNECTED
+                    Toast.makeText(context, "No USB connected", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_DISCONNECTED: // USB DISCONNECTED
+                    Toast.makeText(context, "USB disconnected", Toast.LENGTH_SHORT).show();
+                    break;
+                case UsbService.ACTION_USB_NOT_SUPPORTED: // USB NOT SUPPORTED
+                    Toast.makeText(context, "USB device not supported", Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+    };
+
+    private Hashtable<Integer,Marker> listeDesMarkers;
+
+    private void updateMarker(String data){
+
+        String id = null;
+        Double lat = null ;
+        Double lon = null;
+
+        if(listeDesMarkers.containsKey(id)){
+            listeDesMarkers.get(id).setPosition(new LatLng(lat,lon));
+        } else {
+            Marker m = mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(10, 10))
+                    .title("Position de " + id));
+            listeDesMarkers.put(Integer.getInteger(id),m);
+
+        }
+
+
+
+    }
+
+    // USB Fonctions
+
+    private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
+        if (!UsbService.SERVICE_CONNECTED) {
+            Intent startService = new Intent(this, service);
+            if (extras != null && !extras.isEmpty()) {
+                Set<String> keys = extras.keySet();
+                for (String key : keys) {
+                    String extra = extras.getString(key);
+                    startService.putExtra(key, extra);
+                }
+            }
+            startService(startService);
+        }
+        Intent bindingIntent = new Intent(this, service);
+        bindService(bindingIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void setFilters() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(UsbService.ACTION_USB_PERMISSION_GRANTED);
+        filter.addAction(UsbService.ACTION_NO_USB);
+        filter.addAction(UsbService.ACTION_USB_DISCONNECTED);
+        filter.addAction(UsbService.ACTION_USB_NOT_SUPPORTED);
+        filter.addAction(UsbService.ACTION_USB_PERMISSION_NOT_GRANTED);
+        registerReceiver(mUsbReceiver, filter);
+    }
+
+    /*
+     * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
+     */
+    private static class MyHandler extends Handler {
+        private final WeakReference<MapsActivity> mActivity;
+
+        public MyHandler(MapsActivity activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UsbService.MESSAGE_FROM_SERIAL_PORT:
+                    String data = (String) msg.obj;
+                    //mActivity.get().add.append(data);
+
+                    mActivity.get().updateMarker(data);
+                    break;
+            }
+        }
+    }
+
+    private MyHandler mHandler;
+
+    private UsbService usbService;
+
+    private final ServiceConnection usbConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName arg0, IBinder arg1) {
+            usbService = ((UsbService.UsbBinder) arg1).getService();
+            usbService.setHandler(mHandler);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            usbService = null;
+        }
+    };
+
 }
