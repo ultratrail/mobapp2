@@ -1,5 +1,6 @@
 package teamtreehouse.com.iamhere;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,6 +26,8 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -37,13 +40,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class MapsActivity extends FragmentActivity implements
+public class MapsActivity extends Activity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMarkerClickListener,OnMapReadyCallback {
 
     public static final String TAG = MapsActivity.class.getSimpleName();
-
+    private GoogleMap googleMap;
     /*
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
@@ -121,7 +124,8 @@ public class MapsActivity extends FragmentActivity implements
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            CETTE METHODE FOUT SCANDALE : mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+            MapFragment mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+            mMap.getMapAsync(this);
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
@@ -130,6 +134,16 @@ public class MapsActivity extends FragmentActivity implements
 
         mMap.setOnMarkerClickListener(this);
     }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+
+        googleMap = map;
+
+        setUpMap();
+
+    }
+
 
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
