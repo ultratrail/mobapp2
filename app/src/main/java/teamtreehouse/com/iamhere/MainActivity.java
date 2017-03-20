@@ -49,6 +49,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button goToBluetoothActivity = (Button) findViewById(R.id.goToBluetoothActivity);
+        goToBluetoothActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
+                startActivity(intent);
+            }
+        });
+
         SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

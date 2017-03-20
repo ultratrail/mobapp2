@@ -15,10 +15,14 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.util.Log;
 import android.widget.Toast;
-
+import android.support.annotation.Nullable;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -40,13 +44,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-public class MapsActivity extends Activity implements
+public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener, GoogleMap.OnMarkerClickListener,OnMapReadyCallback {
 
     public static final String TAG = MapsActivity.class.getSimpleName();
-    private GoogleMap googleMap;
     /*
      * Define a request code to send to Google Play services
      * This code is returned in Activity.onActivityResult
@@ -58,9 +61,21 @@ public class MapsActivity extends Activity implements
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
+    @Nullable
+    //@Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_maps, null, false);
+
+       // SupportMapFragment mapFragment = (SupportMapFragment) this.getFragmentManager().findFragmentById(R.id.map);
+        //mapFragment.getMapAsync(this);
+
+        return view;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
 
@@ -81,15 +96,13 @@ public class MapsActivity extends Activity implements
 
 
         mHandler = new MyHandler(this);
-
-
         listeDesMarkers = new Hashtable<>();
 
 
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         setUpMapIfNeeded();
         mGoogleApiClient.connect();
@@ -120,25 +133,14 @@ public class MapsActivity extends Activity implements
      * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
      * method in {@link #onResume()} to guarantee that it will be called.
      */
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            MapFragment mMap = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-            mMap.getMapAsync(this);
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
-
+private void setUpMapIfNeeded() {
         mMap.setOnMarkerClickListener(this);
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
+    public void onMapReady(GoogleMap googleMap) {
 
-        googleMap = map;
+        mMap = googleMap;
 
         setUpMap();
 
@@ -208,7 +210,7 @@ public class MapsActivity extends Activity implements
        /* MarkerOptions options = new MarkerOptions()
                 .position(latLng)
                 .title("You!");
-        
+
         mMap.addMarker(options);*/
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
