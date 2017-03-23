@@ -8,12 +8,14 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -40,7 +43,7 @@ import java.util.Set;
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener {
+        LocationListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     public static final String TAG = MapsActivity.class.getSimpleName();
 
@@ -120,15 +123,15 @@ public class MapsActivity extends FragmentActivity implements
     private void setUpMapIfNeeded() {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            CETTE METHODE FOUT SCANDALE : mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-            // Check if we were successful in obtaining the map.
+
+            ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+
             if (mMap != null) {
                 setUpMap();
             }
         }
 
-        mMap.setOnMarkerClickListener(this);
+
     }
 
     /**
@@ -141,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        int nombrePersonne= sharedPref.getInt(getString(R.string.nbMembre), 3);
+        int nombrePersonne = sharedPref.getInt(getString(R.string.nbMembre), 3);
 
         Random random = new Random();
 
@@ -149,13 +152,13 @@ public class MapsActivity extends FragmentActivity implements
             listeDesMarkers = new Hashtable<>();
         }
 
-        for (int i=0; i<nombrePersonne;i++){
-            Double randomLat = random.nextDouble()*180-90;
-            Double randomLon = random.nextDouble()*360-180;
+        for (int i = 0; i < nombrePersonne; i++) {
+            Double randomLat = random.nextDouble() * 180 - 90;
+            Double randomLon = random.nextDouble() * 360 - 180;
 
-            LatLng randomPosition = new LatLng(randomLat,randomLon);
-            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title("Membre " + i+1));
-            listeDesMarkers.put(i+1,m);
+            LatLng randomPosition = new LatLng(randomLat, randomLon);
+            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title("Membre " + i + 1));
+            listeDesMarkers.put(i + 1, m);
         }
 
        /* //Comme je peux pas test avec mon tél je mais des positions random pour tester
@@ -202,6 +205,16 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (location == null) {
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -360,6 +373,12 @@ public class MapsActivity extends FragmentActivity implements
 
         return false;
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap=googleMap;
+        mMap.setOnMarkerClickListener(this);
     }
 
     /*
