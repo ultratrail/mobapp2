@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import java.util.Hashtable;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -39,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
 
                 SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
 
-                SharedPreferences sharedPref = getSharedPreferences("MapsActivity", MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(getString(R.string.nbMembre), sb.getProgress());
-                editor.commit();
+                Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+
+                for (int i = 1; i<= sb.getProgress(); i++){
+                    personnes.put(i,new Personne("Zimoule " + i, i, null));
+                }
 
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                 startActivity(intent);

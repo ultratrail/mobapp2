@@ -83,7 +83,7 @@ public class MapsActivity extends FragmentActivity implements
         mHandler = new MyHandler(this);
 
 
-        listeDesMarkers = new Hashtable<>();
+        //listeDesMarkers = new Hashtable<>();
 
 
     }
@@ -143,34 +143,34 @@ public class MapsActivity extends FragmentActivity implements
     private void setUpMap() {
 
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        int nombrePersonne = sharedPref.getInt(getString(R.string.nbMembre), 3);
+
+        int nombrePersonne = UltraTeamApplication.getInstance().getNbPersonnes();
+
+        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         Random random = new Random();
 
-        if (listeDesMarkers == null) {
-            listeDesMarkers = new Hashtable<>();
-        }
 
-        for (int i = 0; i < nombrePersonne; i++) {
+
+        for (int i = 1; i <= nombrePersonne; i++) {
             Double randomLat = random.nextDouble() * 180 - 90;
             Double randomLon = random.nextDouble() * 360 - 180;
 
             LatLng randomPosition = new LatLng(randomLat, randomLon);
-            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title("Membre " + i + 1));
-            listeDesMarkers.put(i + 1, m);
+            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(i).getNom()));
+            personnes.get(i).setMarker(m);
+            personnes.get(i).setPosition(randomPosition);
         }
 
-       /* //Comme je peux pas test avec mon tél je mais des positions random pour tester
+
+
+        //Comme je peux pas test avec mon tél je mais des positions random pour tester
         Marker m1 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Membre 1"));
         Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
         Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));
 
 
 
-        listeDesMarkers.put(1, m1);
-        listeDesMarkers.put(2, m2);
-        listeDesMarkers.put(3, m3);*/
 
     }
 
@@ -182,16 +182,21 @@ public class MapsActivity extends FragmentActivity implements
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
+        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
-        if (listeDesMarkers.containsKey(0)) {
-            listeDesMarkers.get(0).setPosition(latLng);
+        //TODO Le marker du chef sera pas mis à jour
+        if (personnes.containsKey(0)) {
+            personnes.get(0).setPosition(latLng);
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title("You"));
-            listeDesMarkers.put(0, m);
+            personnes.put(0, new Personne("You", 0, latLng));
+            personnes.get(0).setMarker(m);
 
         }
+
+        
 
         //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
        /* MarkerOptions options = new MarkerOptions()
@@ -292,11 +297,11 @@ public class MapsActivity extends FragmentActivity implements
         }
     };
 
-    private Hashtable<Integer, Marker> listeDesMarkers;
+
 
     private void updateMarker(String data) {
 
-        String id = null;
+        /*String id = null;
         Double lat = null;
         Double lon = null;
 
@@ -308,7 +313,7 @@ public class MapsActivity extends FragmentActivity implements
                     .title("Position de " + id));
             listeDesMarkers.put(Integer.getInteger(id), m);
 
-        }
+        }*/
 
 
     }
@@ -360,11 +365,8 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-
-        Marker chef = listeDesMarkers.get(0);
-
-
-        LatLng posChef = chef.getPosition();
+        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+        LatLng posChef  = personnes.get(0).getPosition();
 
         LatLng posMembre = marker.getPosition();
 
