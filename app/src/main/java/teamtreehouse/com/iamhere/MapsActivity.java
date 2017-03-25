@@ -196,7 +196,7 @@ public class MapsActivity extends FragmentActivity implements
 
         }
 
-        
+
 
         //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
        /* MarkerOptions options = new MarkerOptions()
