@@ -3,13 +3,30 @@
 
     <string name="app_name">I Am Here</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_bluetooth">Bluetooth</string>
     <string name="nbMembre">nombreMembre</string>
     <string name="title_activity_settings">Settings</string>
 
-    <!-- Strings related to Settings -->
+    <!-- Menu items -->
+    <string name="menu_connect">Connect</string>
+    <string name="menu_disconnect">Disconnect</string>
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+    <string name="unknown_device">Unknown device</string>
+    <string name="unknown_characteristic">Unknown characteristic</string>
+    <string name="unknown_service">Unknown service</string>
 
+    <!-- Strings related to BLE -->
+    <string name="label_data">Data:</string>
+    <string name="label_device_address">Device address:</string>
+    <string name="label_state">State:</string>
+    <string name="no_data">No data</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="title_devices">BLE Device Scan</string>
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
+    <string name="ble_not_supported">Bluetooth non supporté par votre appareil!</string>
 
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact
