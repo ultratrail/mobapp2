@@ -130,6 +130,9 @@ public class MapsActivity extends FragmentActivity implements
                 setUpMap();
             }
         }
+        else {
+            setUpMap();
+        }
 
 
     }
@@ -164,10 +167,10 @@ public class MapsActivity extends FragmentActivity implements
 
 
 
-        //Comme je peux pas test avec mon tél je mais des positions random pour tester
+       /* //Comme je peux pas test avec mon tél je mais des positions random pour tester
         Marker m1 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Membre 1"));
         Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
-        Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));
+        Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));*/
 
 
 
@@ -301,11 +304,13 @@ public class MapsActivity extends FragmentActivity implements
 
     private void updateMarker(String data) {
 
-        /*String id = null;
+       /* String id = null;
         Double lat = null;
         Double lon = null;
 
-        if (listeDesMarkers.containsKey(id)) {
+        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+
+        if (p.containsKey(id)) {
             listeDesMarkers.get(id).setPosition(new LatLng(lat, lon));
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
@@ -381,6 +386,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onMapReady(GoogleMap googleMap) {
         mMap=googleMap;
         mMap.setOnMarkerClickListener(this);
+        setUpMapIfNeeded();
     }
 
     /*
