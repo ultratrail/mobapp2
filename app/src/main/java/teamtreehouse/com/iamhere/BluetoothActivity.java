@@ -47,6 +47,7 @@ public class BluetoothActivity extends ListActivity {
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
     private Handler mHandler;
+    private LayoutInflater mInflator;
 
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after 10 seconds.
@@ -57,6 +58,9 @@ public class BluetoothActivity extends ListActivity {
         super.onCreate(savedInstanceState);
       //  getActionBar().setTitle(R.string.title_devices);
         mHandler = new Handler();
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup rootView  = (ViewGroup)inflater.inflate(R.layout.gatt_services_characteristics, null);
+        setContentView(rootView);
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -188,7 +192,7 @@ public class BluetoothActivity extends ListActivity {
             super();
             mLeDevices = new ArrayList<BluetoothDevice>();
             mInflator = BluetoothActivity.this.getLayoutInflater();
-            Log.i("zimoul",mInflator.toString());
+
         }
 
         public void addDevice(BluetoothDevice device) {
@@ -241,7 +245,6 @@ public class BluetoothActivity extends ListActivity {
             else
                 viewHolder.deviceName.setText(R.string.unknown_device);
             viewHolder.deviceAddress.setText(device.getAddress());
-
             return view;
         }
     }
