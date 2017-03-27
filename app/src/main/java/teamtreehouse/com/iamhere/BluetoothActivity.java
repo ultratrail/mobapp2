@@ -26,7 +26,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,9 +55,14 @@ public class BluetoothActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Handler mHandler = new Handler();
-        setContentView(R.layout.listitem_device);
-
+      //  getActionBar().setTitle(R.string.title_devices);
+        mHandler = new Handler();
+        // Use this check to determine whether BLE is supported on the device.  Then you can
+        // selectively disable BLE-related features.
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
         // BluetoothAdapter through BluetoothManager.
@@ -183,6 +188,7 @@ public class BluetoothActivity extends ListActivity {
             super();
             mLeDevices = new ArrayList<BluetoothDevice>();
             mInflator = BluetoothActivity.this.getLayoutInflater();
+            Log.i("zimoul",mInflator.toString());
         }
 
         public void addDevice(BluetoothDevice device) {
