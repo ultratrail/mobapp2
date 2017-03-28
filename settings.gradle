@@ -1,1 +1,5 @@
-include ':app'
+include ':app', ':mqtt_service'
+project(':mqtt_service').projectDir = new File('mqtt_service')
+project(':app').projectDir = new File('app')
+
+

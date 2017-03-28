@@ -2,6 +2,9 @@ package teamtreehouse.com.iamhere;
 
 import android.app.Application;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -23,15 +26,29 @@ public class UltraTeamApplication extends Application {
         singleton = this;
     }
 
-    private Hashtable<Integer, Personne> personnes;
+    private Mqtt_client mqtt_client;
+    private Hashtable<String, Personne> personnes;
 
     public int getNbPersonnes(){
         return personnes.size();
     }
 
-    public Hashtable<Integer, Personne> getPersonnes (){
+    public Hashtable<String, Personne> getPersonnes (){
         return personnes;
     }
 
+    public Mqtt_client getMqtt_client() {
+        return mqtt_client;
+    }
+
+    public void setMqtt_client(Mqtt_client mqtt_client) {
+        this.mqtt_client = mqtt_client;
+    }
+
+    public void add_someone(String s){
+
+        personnes.put(s,new Personne(s,0,new LatLng(0,0)));
+        //TODO a changer
+    }
 
 }
