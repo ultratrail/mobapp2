@@ -46,7 +46,6 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
-        <activity android:name=".DeviceControlActivity"/>
         <activity
             android:name=".BluetoothActivity"
             android:label="@string/title_activity_bluetooth">
@@ -65,7 +64,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".BluetoothLeService" android:enabled="true"/>
     </application>
 
 </manifest>
