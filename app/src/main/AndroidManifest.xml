@@ -52,8 +52,8 @@
             android:name=".BluetoothActivity"
             android:label="@string/title_activity_bluetooth" />
         <activity
-            android:name=".MainActivity"
-            android:label="@string/title_activity_main"
+            android:name=".Home"
+            android:label="Home"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,7 +66,7 @@
             android:name=".BluetoothLeService"
             android:enabled="true" />
 
-        <activity android:name=".Home" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".Config_Activity" />
         <activity android:name=".Groupe_Activity" />
     </application>

@@ -37,32 +37,7 @@ public class Groupe_Activity extends AppCompatActivity {
         button_add_someone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-                final View popupView = layoutInflater.inflate(R.layout.popup, null);
-                final PopupWindow popupWindow = new PopupWindow(
-                        popupView,
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
 
-                Button btnOK = (Button) popupView.findViewById(R.id.ok);
-                btnOK.setOnClickListener(new Button.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        TextView textView = (TextView) popupView.findViewById(R.id.id_a_ajouter);
-                        id_a_ajouter =  textView.getText().toString();
-                        Log.i("ST",id_a_ajouter);
-                        membres.add(id_a_ajouter); //bizarre a modifier
- //                       adapter.add(id_a_ajouter); normalement, le membres.add doit suffire car l'adapter se base déjà sur la liste de membres.
-                        list.setAdapter(adapter);
-
-                        popupWindow.dismiss();
-                    }
-                });
-
-                popupWindow.showAsDropDown(button_add_someone, 50, -30);
-                */
                 TextView textView = (TextView)findViewById(R.id.name);
                 id_a_ajouter=textView.getText().toString();
                 Log.i("ST",id_a_ajouter);

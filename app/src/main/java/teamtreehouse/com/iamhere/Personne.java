@@ -8,11 +8,13 @@ import com.google.android.gms.maps.model.Marker;
  */
 
 class Personne {
+//TODO ajouter le rythme cardiaque
 
     private String nom;
 
     private int id;
 
+    private boolean isPositionSet;
     private LatLng position;
 
     public Marker getMarker() {
@@ -29,7 +31,15 @@ class Personne {
         this.nom = nom;
         this.id = id;
         this.position = position;
+        this.isPositionSet=true;
     }
+
+    public Personne(String nom, int id) {
+        this.nom = nom;
+        this.id = id;
+        this.isPositionSet=false;
+    }
+
 
     public String getNom() {
         return nom;
@@ -55,5 +65,11 @@ class Personne {
         this.position = position;
     }
 
+    public boolean isPositionSet() {
+        return isPositionSet;
+    }
 
+    public void setPositionSet(boolean positionSet) {
+        isPositionSet = positionSet;
+    }
 }

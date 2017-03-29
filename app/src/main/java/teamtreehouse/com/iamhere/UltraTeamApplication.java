@@ -1,6 +1,7 @@
 package teamtreehouse.com.iamhere;
 
 import android.app.Application;
+import android.graphics.Point;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -49,6 +50,13 @@ public class UltraTeamApplication extends Application {
 
         personnes.put(s,new Personne(s,0,new LatLng(0,0)));
         //TODO a changer
+    }
+    public void setPosition(String s, Point p){
+        LatLng l = new LatLng(p.x,p.y);
+        if (!(personnes.containsKey(s))){
+            personnes.put(s,new Personne(s,0,l));
+        }
+        else personnes.get(s).setPosition(l);
     }
 
 }
