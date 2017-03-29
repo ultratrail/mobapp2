@@ -39,5 +39,5 @@ public class Message {
         return id+":"+coord.x+":"+coord.y;
     }
 
-    
+
 }
