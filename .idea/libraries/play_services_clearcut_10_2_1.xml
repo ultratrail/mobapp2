@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="play-services-clearcut-10.2.1">
     <CLASSES>
-      <root url="file://$USER_HOME$/.android/build-cache/ad41ae2af9da82856c44ea1a88e655178d75417a/output/res" />
-      <root url="jar://$USER_HOME$/.android/build-cache/ad41ae2af9da82856c44ea1a88e655178d75417a/output/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/d1834b40c06f82ae0ca299b32cd22267aa53c1f1/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/d1834b40c06f82ae0ca299b32cd22267aa53c1f1/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

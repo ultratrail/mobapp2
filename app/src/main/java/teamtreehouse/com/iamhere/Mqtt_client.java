@@ -223,4 +223,19 @@ public class Mqtt_client  {
     }
 
 
+    public void unsubscribe(final String topic){
+        try {
+            Log.i("MQTT","unsubscribing to topic "+ topic+"...");
+            mqttAndroidClient.unsubscribe(topic);
+
+        } catch (MqttException ex){
+            System.err.println("Exception whilst unsubscribing");
+            ex.printStackTrace();
+        }
+
+        Log.i("MQTT","Successfully unsubscribed to "+topic);
+    }
+
+
+
 }
