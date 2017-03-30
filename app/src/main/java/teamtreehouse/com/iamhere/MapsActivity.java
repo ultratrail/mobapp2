@@ -7,17 +7,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,18 +27,22 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
@@ -57,12 +63,14 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private Polyline polylineChefAMarker;
+    private Polyline polylineProcheAMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -126,14 +134,12 @@ public class MapsActivity extends FragmentActivity implements
 
             ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
-            if (mMap != null) {
+            if(mMap!=null)
                 setUpMap();
-            }
-        }
-        else {
+
+        } else {
             setUpMap();
         }
-
 
     }
 
@@ -153,17 +159,30 @@ public class MapsActivity extends FragmentActivity implements
 
         Random random = new Random();
 
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
 
         for (int i = 1; i <= nombrePersonne; i++) {
-            Double randomLat = random.nextDouble() * 180 - 90;
-            Double randomLon = random.nextDouble() * 360 - 180;
+            Double randomLat = random.nextDouble() * 2 - 1;
+            Double randomLon = random.nextDouble() * 2 - 1;
 
-            LatLng randomPosition = new LatLng(randomLat, randomLon);
+            LatLng randomPosition = new LatLng(45.166672 + randomLat, 5.71667 + randomLon);
             Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(i).getNom()));
             personnes.get(i).setMarker(m);
             personnes.get(i).setPosition(randomPosition);
+
+            builder.include(m.getPosition());
         }
+
+        //Centrer la camera pour voir tous les markers
+        LatLngBounds bounds = builder.build();
+        int padding = 0 ;
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
+        mMap.moveCamera(cu);
+
+
+
+
 
 
 
@@ -193,22 +212,27 @@ public class MapsActivity extends FragmentActivity implements
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .title("You"));
-            personnes.put(0, new Personne("You", 0, latLng));
+                    .title("Vous"));
+            personnes.put(0, new Personne("Vous", 0, latLng));
             personnes.get(0).setMarker(m);
 
         }
 
-
-
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
-       /* MarkerOptions options = new MarkerOptions()
-                .position(latLng)
-                .title("You!");
-        
-        mMap.addMarker(options);*/
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+
+        if(UltraTeamApplication.getInstance().getBase()==null){
+
+            Marker m=mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
+                    .title("Point de rdv")
+                    .draggable(true));
+
+            UltraTeamApplication.getInstance().setBase(m);
+
+
+        }
+
     }
 
     @Override
@@ -352,7 +376,13 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    public double distance(double lat_a, double lng_a, double lat_b, double lng_b) {
+    public double distance(LatLng pa, LatLng pb) {
+        double lat_a = pa.latitude;
+        double lng_a = pa.longitude;
+        double lat_b = pb.latitude;
+        double lng_b = pb.longitude;
+
+
         double earthRadius = 3958.75;
         double latDiff = Math.toRadians(lat_b - lat_a);
         double lngDiff = Math.toRadians(lng_b - lng_a);
@@ -367,18 +397,98 @@ public class MapsActivity extends FragmentActivity implements
         return new Float(distance * meterConversion).floatValue();
     }
 
+    String getHumanDistance(double distance){
+        if(distance<1000){
+            return distance + "m";
+        } else {
+            return distance/1000 + "km";
+        }
+    }
+
+
+    private Personne getPersonneLaPlusProche(LatLng position){
+        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+
+        Personne personneLaplusProche = personnes.get(0);
+        double distanceChef= distance(personneLaplusProche.getPosition(), position);
+
+        Iterator<Personne> itr = personnes.values().iterator();
+        double distanceMin=distanceChef;
+        Personne personneCourante=null;
+
+        while(itr.hasNext()) {
+            personneCourante = itr.next();
+
+            double distanceCourante = distance(position,personneCourante.getPosition());
+
+
+            if(distanceCourante!=0 && distanceMin>distanceCourante){
+                personneLaplusProche=personneCourante;
+                distanceMin=distanceCourante;
+            }
+        }
+
+        return personneLaplusProche;
+
+    }
+
+
+
+
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-        LatLng posChef  = personnes.get(0).getPosition();
+        if(marker.getTitle()=="Point de rdv"){
+            Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+            LatLng posChef  = personnes.get(0).getPosition();
 
-        LatLng posMembre = marker.getPosition();
+            LatLng posMembre = marker.getPosition();
 
-        marker.setSnippet("est à : " + distance(posChef.latitude, posChef.longitude, posMembre.latitude, posMembre.longitude) + " m");
+            double distanceChef= distance(posChef, posMembre);
+            Personne personneLaplusProche = getPersonneLaPlusProche(posMembre);
 
 
+            marker.setSnippet("est à : " + getHumanDistance(distanceChef));
+            personneLaplusProche.getMarker().setSnippet("");
+
+            double distanceMin = distance(personneLaplusProche.getPosition(),posMembre);
+
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.map), personneLaplusProche.getNom() + " est la personne la plus proche de " + marker.getTitle() +" à " + getHumanDistance(distanceMin) , Snackbar.LENGTH_LONG);
+
+
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(Color.DKGRAY);
+
+
+            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
+
+
+
+
+            if(polylineChefAMarker !=null){
+                polylineChefAMarker.remove();
+            }
+
+            PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
+
+            polylineChefAMarker =mMap.addPolyline(polylineOptions);
+
+            if(polylineProcheAMarker !=null){
+                polylineProcheAMarker.remove();
+            }
+
+            polylineOptions = new PolylineOptions().add(personneLaplusProche.getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
+
+            polylineProcheAMarker =mMap.addPolyline(polylineOptions);
+
+
+
+        }
         return false;
+
 
     }
 
