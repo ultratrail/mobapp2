@@ -27,11 +27,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -157,17 +159,30 @@ public class MapsActivity extends FragmentActivity implements
 
         Random random = new Random();
 
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
 
         for (int i = 1; i <= nombrePersonne; i++) {
-            Double randomLat = random.nextDouble() * 180 - 90;
-            Double randomLon = random.nextDouble() * 360 - 180;
+            Double randomLat = random.nextDouble() * 2 - 1;
+            Double randomLon = random.nextDouble() * 2 - 1;
 
-            LatLng randomPosition = new LatLng(randomLat, randomLon);
+            LatLng randomPosition = new LatLng(45.166672 + randomLat, 5.71667 + randomLon);
             Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(i).getNom()));
             personnes.get(i).setMarker(m);
             personnes.get(i).setPosition(randomPosition);
+
+            builder.include(m.getPosition());
         }
+
+        //Centrer la camera pour voir tous les markers
+        LatLngBounds bounds = builder.build();
+        int padding = 0 ;
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
+        mMap.moveCamera(cu);
+
+
+
+
 
 
 
@@ -203,16 +218,11 @@ public class MapsActivity extends FragmentActivity implements
 
         }
 
-
-
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(currentLatitude, currentLongitude)).title("Current Location"));
-       /* MarkerOptions options = new MarkerOptions()
-                .position(latLng)
-                .title("You!");
-        
-        mMap.addMarker(options);*/
-
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+
+
+
+
     }
 
     @Override
@@ -356,7 +366,13 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-    public double distance(double lat_a, double lng_a, double lat_b, double lng_b) {
+    public double distance(LatLng pa, LatLng pb) {
+        double lat_a = pa.latitude;
+        double lng_a = pa.longitude;
+        double lat_b = pb.latitude;
+        double lng_b = pb.longitude;
+
+
         double earthRadius = 3958.75;
         double latDiff = Math.toRadians(lat_b - lat_a);
         double lngDiff = Math.toRadians(lng_b - lng_a);
@@ -384,7 +400,7 @@ public class MapsActivity extends FragmentActivity implements
         Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         Personne personneLaplusProche = personnes.get(0);
-        double distanceChef= distance(personneLaplusProche.getPosition().latitude, personneLaplusProche.getPosition().longitude, position.latitude, position.longitude);
+        double distanceChef= distance(personneLaplusProche.getPosition(), position);
 
         Iterator<Personne> itr = personnes.values().iterator();
         double distanceMin=distanceChef;
@@ -393,7 +409,7 @@ public class MapsActivity extends FragmentActivity implements
         while(itr.hasNext()) {
             personneCourante = itr.next();
 
-            double distanceCourante = distance(position.latitude, position.longitude,personneCourante.getPosition().latitude, personneCourante.getPosition().longitude);
+            double distanceCourante = distance(position,personneCourante.getPosition());
 
 
             if(distanceCourante!=0 && distanceMin>distanceCourante){
@@ -417,14 +433,14 @@ public class MapsActivity extends FragmentActivity implements
 
         LatLng posMembre = marker.getPosition();
 
-        double distanceChef= distance(posChef.latitude, posChef.longitude, posMembre.latitude, posMembre.longitude);
+        double distanceChef= distance(posChef, posMembre);
         Personne personneLaplusProche = getPersonneLaPlusProche(posMembre);
 
 
         marker.setSnippet("est à : " + getHumanDistance(distanceChef));
         personneLaplusProche.getMarker().setSnippet("");
 
-        double distanceMin = distance(personneLaplusProche.getPosition().latitude, personneLaplusProche.getPosition().longitude,posMembre.latitude, posMembre.longitude);
+        double distanceMin = distance(personneLaplusProche.getPosition(),posMembre);
 
         Snackbar snackbar = Snackbar
                 .make(findViewById(R.id.map), personneLaplusProche.getNom() + " est la personne la plus proche de " + marker.getTitle() +" à " + getHumanDistance(distanceMin) , Snackbar.LENGTH_LONG);

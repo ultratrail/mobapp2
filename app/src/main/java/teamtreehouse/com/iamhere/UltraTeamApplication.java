@@ -2,6 +2,8 @@ package teamtreehouse.com.iamhere;
 
 import android.app.Application;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.Hashtable;
 
 /**
@@ -33,5 +35,14 @@ public class UltraTeamApplication extends Application {
         return personnes;
     }
 
+    private LatLng base;
+
+    public LatLng getBase(){
+        return base;
+    }
+
+    public void setBas(LatLng l){
+        base=l;
+    }
 
 }
