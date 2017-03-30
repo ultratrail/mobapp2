@@ -21,6 +21,17 @@ import java.util.Hashtable;
 public class MainActivity extends AppCompatActivity {
     private TextView mDataField;
     public static boolean BLUETOOTH_SERVICE_ACTIVE;
+    private boolean BLUETOOTH_SERVICE_REGISTER;
+
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        if(BLUETOOTH_SERVICE_ACTIVE) {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+            BLUETOOTH_SERVICE_REGISTER = true;
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if(BLUETOOTH_SERVICE_ACTIVE) {
             registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+            BLUETOOTH_SERVICE_REGISTER = true;
         }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -44,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
         goToMapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-              unregisterReceiver(mGattUpdateReceiver);
+                if(BLUETOOTH_SERVICE_REGISTER) {
+                    unregisterReceiver(mGattUpdateReceiver);
+                    BLUETOOTH_SERVICE_REGISTER = false;
+                }
                 SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
 
                 Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
@@ -64,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(BLUETOOTH_SERVICE_ACTIVE){
+                if(BLUETOOTH_SERVICE_REGISTER){
                     unregisterReceiver(mGattUpdateReceiver);
-                    BLUETOOTH_SERVICE_ACTIVE = false;
+                    BLUETOOTH_SERVICE_REGISTER = false;
 
                 }
 

@@ -178,7 +178,6 @@ public class DeviceControlActivity extends AppCompatActivity {
         goToMainActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent intent = new Intent(DeviceControlActivity.this, MainActivity.class);
                 startActivity(intent);
             }
@@ -241,6 +240,12 @@ public class DeviceControlActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if( resourceId == 2131230845){
+                    MainActivity.BLUETOOTH_SERVICE_ACTIVE = true;
+                }
+                else{
+                    MainActivity.BLUETOOTH_SERVICE_ACTIVE = false;
+                }
                 mConnectionState.setText(resourceId);
             }
         });
