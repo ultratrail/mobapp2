@@ -7,17 +7,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -32,11 +34,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
@@ -57,12 +61,14 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private Polyline polylineChefAMarker;
+    private Polyline polylineProcheAMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -126,14 +132,12 @@ public class MapsActivity extends FragmentActivity implements
 
             ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
 
-            if (mMap != null) {
+            if(mMap!=null)
                 setUpMap();
-            }
-        }
-        else {
+
+        } else {
             setUpMap();
         }
-
 
     }
 
@@ -193,8 +197,8 @@ public class MapsActivity extends FragmentActivity implements
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .title("You"));
-            personnes.put(0, new Personne("You", 0, latLng));
+                    .title("Vous"));
+            personnes.put(0, new Personne("Vous", 0, latLng));
             personnes.get(0).setMarker(m);
 
         }
@@ -367,6 +371,16 @@ public class MapsActivity extends FragmentActivity implements
         return new Float(distance * meterConversion).floatValue();
     }
 
+    String getHumanDistance(double distance){
+        if(distance<1000){
+            return distance + "m";
+        } else {
+            return distance/1000 + "km";
+        }
+    }
+
+
+
     @Override
     public boolean onMarkerClick(Marker marker) {
 
@@ -375,7 +389,59 @@ public class MapsActivity extends FragmentActivity implements
 
         LatLng posMembre = marker.getPosition();
 
-        marker.setSnippet("est à : " + distance(posChef.latitude, posChef.longitude, posMembre.latitude, posMembre.longitude) + " m");
+        double distanceChef= distance(posChef.latitude, posChef.longitude, posMembre.latitude, posMembre.longitude);
+        Personne personneLaplusProche = personnes.get(0);
+
+        Iterator<Personne> itr = personnes.values().iterator();
+        double distanceMin=distanceChef;
+        Personne personneCourante=null;
+
+        while(itr.hasNext()) {
+             personneCourante = itr.next();
+
+            double distanceCourante = distance(posMembre.latitude, posMembre.longitude,personneCourante.getPosition().latitude, personneCourante.getPosition().longitude);
+
+
+            if(distanceCourante!=0 && distanceMin>distanceCourante){
+                personneLaplusProche=personneCourante;
+                distanceMin=distanceCourante;
+            }
+        }
+
+
+        marker.setSnippet("est à : " + getHumanDistance(distanceChef));
+        personneLaplusProche.getMarker().setSnippet("");
+
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.map), personneLaplusProche.getNom() + " est la personne la plus proche de " + marker.getTitle() +" à " + getHumanDistance(distanceMin) , Snackbar.LENGTH_LONG);
+
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.DKGRAY);
+
+
+        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+        snackbar.show();
+
+
+
+
+        if(polylineChefAMarker !=null){
+            polylineChefAMarker.remove();
+        }
+
+        PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
+
+        polylineChefAMarker =mMap.addPolyline(polylineOptions);
+
+        if(polylineProcheAMarker !=null){
+            polylineProcheAMarker.remove();
+        }
+
+         polylineOptions = new PolylineOptions().add(personneLaplusProche.getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
+
+        polylineProcheAMarker =mMap.addPolyline(polylineOptions);
 
 
         return false;
