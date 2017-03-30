@@ -221,7 +221,17 @@ public class MapsActivity extends FragmentActivity implements
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
 
+        if(UltraTeamApplication.getInstance().getBase()==null){
 
+            Marker m=mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
+                    .title("Point de rdv")
+                    .draggable(true));
+
+            UltraTeamApplication.getInstance().setBase(m);
+
+
+        }
 
     }
 
@@ -428,53 +438,57 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-        LatLng posChef  = personnes.get(0).getPosition();
+        if(marker.getTitle()=="Point de rdv"){
+            Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+            LatLng posChef  = personnes.get(0).getPosition();
 
-        LatLng posMembre = marker.getPosition();
+            LatLng posMembre = marker.getPosition();
 
-        double distanceChef= distance(posChef, posMembre);
-        Personne personneLaplusProche = getPersonneLaPlusProche(posMembre);
-
-
-        marker.setSnippet("est à : " + getHumanDistance(distanceChef));
-        personneLaplusProche.getMarker().setSnippet("");
-
-        double distanceMin = distance(personneLaplusProche.getPosition(),posMembre);
-
-        Snackbar snackbar = Snackbar
-                .make(findViewById(R.id.map), personneLaplusProche.getNom() + " est la personne la plus proche de " + marker.getTitle() +" à " + getHumanDistance(distanceMin) , Snackbar.LENGTH_LONG);
+            double distanceChef= distance(posChef, posMembre);
+            Personne personneLaplusProche = getPersonneLaPlusProche(posMembre);
 
 
-        View snackbarView = snackbar.getView();
-        snackbarView.setBackgroundColor(Color.DKGRAY);
+            marker.setSnippet("est à : " + getHumanDistance(distanceChef));
+            personneLaplusProche.getMarker().setSnippet("");
+
+            double distanceMin = distance(personneLaplusProche.getPosition(),posMembre);
+
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.map), personneLaplusProche.getNom() + " est la personne la plus proche de " + marker.getTitle() +" à " + getHumanDistance(distanceMin) , Snackbar.LENGTH_LONG);
 
 
-        TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(Color.YELLOW);
-        snackbar.show();
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(Color.DKGRAY);
+
+
+            TextView textView = (TextView) snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+            snackbar.show();
 
 
 
 
-        if(polylineChefAMarker !=null){
-            polylineChefAMarker.remove();
+            if(polylineChefAMarker !=null){
+                polylineChefAMarker.remove();
+            }
+
+            PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
+
+            polylineChefAMarker =mMap.addPolyline(polylineOptions);
+
+            if(polylineProcheAMarker !=null){
+                polylineProcheAMarker.remove();
+            }
+
+            polylineOptions = new PolylineOptions().add(personneLaplusProche.getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
+
+            polylineProcheAMarker =mMap.addPolyline(polylineOptions);
+
+
+
         }
-
-        PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
-
-        polylineChefAMarker =mMap.addPolyline(polylineOptions);
-
-        if(polylineProcheAMarker !=null){
-            polylineProcheAMarker.remove();
-        }
-
-         polylineOptions = new PolylineOptions().add(personneLaplusProche.getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
-
-        polylineProcheAMarker =mMap.addPolyline(polylineOptions);
-
-
         return false;
+
 
     }
 
