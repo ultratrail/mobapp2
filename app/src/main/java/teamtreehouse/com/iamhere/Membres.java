@@ -13,28 +13,28 @@ public class Membres extends ArrayList<String> {
     public static Membres getInstance() {
         return ourInstance;
     }
-
+    //TODO faire en sorte que l'on ne puisse pas ajouter deux fois la meme personne
     private Membres() {
         //TODO recuperer cette liste dans un fichier
-        super.add("Client1");
-        super.add("Benoit");
-        super.add("Cyril");
-        super.add("David");
-        super.add("Eloise");
-        super.add("Florent");
+        add("Client1");
+        add("Benoit");
+        add("Cyril");
+        add("David");
+        add("Eloise");
+        add("Florent");
     }
 
     @Override
     public boolean add(String a_ajouter){
         //TODO surement a faire ailleurs
+        UltraTeamApplication.getInstance().add_someone(a_ajouter);
         // mqtt_client.subscribeToTopic(a_ajouter);
         return super.add(a_ajouter);
     }
 
     @Override
     public boolean remove(Object memberName) {
-        //TODO
-       // mqtt_client.unsubscribe((String) memberName);
+        UltraTeamApplication.getInstance().remove_someone((String)memberName);
         return super.remove(memberName);
     }
 }

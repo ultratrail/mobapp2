@@ -63,6 +63,7 @@ class Personne {
 
     public void setPosition(LatLng position) {
         this.position = position;
+        this.isPositionSet=true;
     }
 
     public boolean isPositionSet() {

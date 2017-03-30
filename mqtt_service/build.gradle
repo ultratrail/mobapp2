@@ -33,11 +33,11 @@ repositories {
 }
 
 configurations {
-    //androidTestCompile.exclude module: 'org.eclipse.paho.client.mqttv3'
+    androidTestCompile.exclude module: 'org.eclipse.paho.client.mqttv3'
 }
 
 dependencies {
-    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.clientVersion}"
+    //compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:${rootProject.ext.clientVersion}"
     compile "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"  //
     compile fileTree(include: ['*.jar'], dir: 'libs')
 }
@@ -104,7 +104,7 @@ publishing {
         if (project.hasProperty('eclipseRepoUsername')) {
             maven {
                 name 'eclipse'
-                url 'https://repo.eclipse.org/content/repositories/paho-' + (rootProject.ext.serviceVersion.endsWith('-SNAPSHOT') ? 'snapshots/' : 'releases/')
+                //url 'https://repo.eclipse.org/content/repositories/paho-' + (rootProject.ext.serviceVersion.endsWith('-SNAPSHOT') ? 'snapshots/' : 'releases/')
                 credentials {
                     username eclipseRepoUsername
                     password eclipseRepoPassword

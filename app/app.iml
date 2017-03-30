@@ -83,7 +83,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-safeguard" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/jniLibs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/rs" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
@@ -133,9 +132,7 @@
     <orderEntry type="library" exported="" name="firebase-storage-common-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-identity-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="transition-25.2.0" level="project" />
-    <orderEntry type="library" exported="" name="org.eclipse.paho.client.mqttv3-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="support-v4-r7" level="project" />
     <orderEntry type="library" exported="" name="play-services-awareness-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-ads-lite-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-clearcut-10.2.1" level="project" />
@@ -158,12 +155,12 @@
     <orderEntry type="library" exported="" name="play-services-drive-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-safetynet-10.2.1" level="project" />
-    <orderEntry type="library" exported="" name="org.eclipse.paho.android.service-1.0.2" level="project" />
     <orderEntry type="library" exported="" name="mediarouter-v7-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-panorama-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-25.2.0" level="project" />
     <orderEntry type="module" module-name="mqtt_service" exported="" />
     <orderEntry type="library" exported="" name="android-android-25" level="project" />
+    <orderEntry type="library" exported="" name="org.eclipse.paho.client.mqttv3-1.1.0" level="project" />
   </component>
 </module>

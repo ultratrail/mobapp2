@@ -29,6 +29,7 @@ public class Mqtt_client  {
     MqttAndroidClient mqttAndroidClient;
 
     final String serverUri = "tcp://iot.eclipse.org:1883"; //TODO c'est la bonne ?
+ //   final String serverUri = "vps364763.ovh.net";
 
     String clientId = "Client1"; //TODO faire en sorte que ce soit lier a l'ID de la personnes
     final String subscriptionTopic = "exampleAndroidTopic";
@@ -40,7 +41,7 @@ public class Mqtt_client  {
 
     public Mqtt_client(Context applicationContext){
         //clientId = clientId + System.currentTimeMillis();
-
+        Log.i("MQTT", "Demarage de MQTT"+ serverUri);
         mqttAndroidClient = new MqttAndroidClient(applicationContext, serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override

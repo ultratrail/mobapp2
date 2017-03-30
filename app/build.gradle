@@ -41,13 +41,13 @@ dependencies {
     compile 'com.google.android.gms:play-services:10.2.1'
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0"
+   // compile "org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0"
     //compile (project(':org.eclipse.paho.android.service')){
   compile (project(':mqtt_service')){
-        //exclude module: "org.eclipse.paho.client.mqttv3"
+        exclude module: "org.eclipse.paho.client.mqttv3"
         transitive=true
     }
-    compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
-    compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.0.2'
+    //compile 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2'
+    //compile 'org.eclipse.paho:org.eclipse.paho.android.service:1.0.2'
 
 }

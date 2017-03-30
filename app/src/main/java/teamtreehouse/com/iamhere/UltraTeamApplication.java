@@ -47,9 +47,8 @@ public class UltraTeamApplication extends Application {
     }
 
     public void add_someone(String s){
-
         personnes.put(s,new Personne(s,0,new LatLng(0,0)));
-        //TODO a changer
+        //mqtt_client.subscribeToTopic(s);
     }
     public void setPosition(String s, Point p){
         LatLng l = new LatLng(p.x,p.y);
@@ -57,6 +56,12 @@ public class UltraTeamApplication extends Application {
             personnes.put(s,new Personne(s,0,l));
         }
         else personnes.get(s).setPosition(l);
+    }
+
+    public void remove_someone(String s){
+        personnes.remove(s);
+        //mqtt_client.unsubscribe(s);
+        //TODO possible problemme avec le marker
     }
 
 }
