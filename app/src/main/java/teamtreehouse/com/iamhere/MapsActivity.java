@@ -380,6 +380,34 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
+    private Personne getPersonneLaPlusProche(LatLng position){
+        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+
+        Personne personneLaplusProche = personnes.get(0);
+        double distanceChef= distance(personneLaplusProche.getPosition().latitude, personneLaplusProche.getPosition().longitude, position.latitude, position.longitude);
+
+        Iterator<Personne> itr = personnes.values().iterator();
+        double distanceMin=distanceChef;
+        Personne personneCourante=null;
+
+        while(itr.hasNext()) {
+            personneCourante = itr.next();
+
+            double distanceCourante = distance(position.latitude, position.longitude,personneCourante.getPosition().latitude, personneCourante.getPosition().longitude);
+
+
+            if(distanceCourante!=0 && distanceMin>distanceCourante){
+                personneLaplusProche=personneCourante;
+                distanceMin=distanceCourante;
+            }
+        }
+
+        return personneLaplusProche;
+
+    }
+
+
+
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -390,27 +418,13 @@ public class MapsActivity extends FragmentActivity implements
         LatLng posMembre = marker.getPosition();
 
         double distanceChef= distance(posChef.latitude, posChef.longitude, posMembre.latitude, posMembre.longitude);
-        Personne personneLaplusProche = personnes.get(0);
-
-        Iterator<Personne> itr = personnes.values().iterator();
-        double distanceMin=distanceChef;
-        Personne personneCourante=null;
-
-        while(itr.hasNext()) {
-             personneCourante = itr.next();
-
-            double distanceCourante = distance(posMembre.latitude, posMembre.longitude,personneCourante.getPosition().latitude, personneCourante.getPosition().longitude);
-
-
-            if(distanceCourante!=0 && distanceMin>distanceCourante){
-                personneLaplusProche=personneCourante;
-                distanceMin=distanceCourante;
-            }
-        }
+        Personne personneLaplusProche = getPersonneLaPlusProche(posMembre);
 
 
         marker.setSnippet("est à : " + getHumanDistance(distanceChef));
         personneLaplusProche.getMarker().setSnippet("");
+
+        double distanceMin = distance(personneLaplusProche.getPosition().latitude, personneLaplusProche.getPosition().longitude,posMembre.latitude, posMembre.longitude);
 
         Snackbar snackbar = Snackbar
                 .make(findViewById(R.id.map), personneLaplusProche.getNom() + " est la personne la plus proche de " + marker.getTitle() +" à " + getHumanDistance(distanceMin) , Snackbar.LENGTH_LONG);
