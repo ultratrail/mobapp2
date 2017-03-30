@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothManager;
 import android.content.ClipData;
 import android.content.Context;
@@ -43,6 +44,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static java.sql.Types.NULL;
 
 /**
  * Activity for scanning and displaying available Bluetooth LE devices.
@@ -70,7 +73,12 @@ public class BluetoothActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
             finish();
         }
-
+        if( BluetoothLeService.mBluetoothGatt != null) {
+            Intent serviceIntent = new Intent(BluetoothActivity.this, BluetoothLeService.class);
+            BluetoothActivity.this.stopService(serviceIntent);
+            BluetoothLeService.mBluetoothGatt.close();
+            BluetoothLeService.mBluetoothGatt = null;
+        }
         // Initializes a Bluetooth adapter.  For API level 18 and above, get a reference to
         // BluetoothAdapter through BluetoothManager.
         final BluetoothManager bluetoothManager =

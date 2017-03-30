@@ -62,6 +62,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:text="Bluetooth" />
+    <TextView android:id="@+id/data_value_service"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data"
+        android:textSize="18sp"
+        android:layout_marginBottom="119dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/textView" />
 
 
 </RelativeLayout>
