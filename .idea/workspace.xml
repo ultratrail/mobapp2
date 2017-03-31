@@ -10,9 +10,10 @@
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6345ab2-7ce7-4326-a6e4-d7526520fe4c" name="Default" comment="">
+    <list default="true" id="c6345ab2-7ce7-4326-a6e4-d7526520fe4c" name="Default" comment="Try to hide keyboard on touch &amp;&amp;">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Groupe_Activity.java" afterPath="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Groupe_Activity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java" afterPath="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_groupe_.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_groupe_.xml" />
     </list>
     <ignored path="mobapp2.iws" />
@@ -70,28 +71,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="MapsActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/MapsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="60" column="57" selection-start-line="60" selection-start-column="57" selection-end-line="60" selection-end-column="57" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GoogleApiClient.class" pinned="false" current-in-tab="false">
-        <entry file="jar://$USER_HOME$/.android/build-cache/29b9a8a72d3f792af74a61995b5cdd2d92f14bba/output/jars/classes.jar!/com/google/android/gms/common/api/GoogleApiClient.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="412" column="35" selection-start-line="412" selection-start-column="35" selection-end-line="412" selection-end-column="35" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="UltraTeamApplication.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/UltraTeamApplication.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -159,25 +138,47 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="Membres.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="Groupe_Activity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Groupe_Activity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="401">
-              <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+            <state relative-caret-position="367">
+              <caret line="64" column="71" selection-start-line="64" selection-start-column="71" selection-end-line="64" selection-end-column="71" />
               <folding>
-                <element signature="e#1441#1906#0" expanded="true" />
-                <element signature="e#1905#1906#0" expanded="true" />
+                <element signature="e#1558#2786#0" expanded="true" />
+                <element signature="e#1776#2066#0" expanded="true" />
+                <element signature="e#2065#2066#0" expanded="true" />
+                <element signature="e#2785#2786#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="activity_groupe_.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="ArrayAdapter.java" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/widget/ArrayAdapter.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="72">
+              <caret line="199" column="33" selection-start-line="199" selection-start-column="33" selection-end-line="199" selection-end-column="34" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="activity_groupe_.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_groupe_.xml">
-          <provider editor-type-id="android-designer2">
+          <provider selected="true" editor-type-id="android-designer2">
             <state />
           </provider>
-          <provider selected="true" editor-type-id="text-editor">
+          <provider editor-type-id="text-editor">
             <state relative-caret-position="119">
               <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
               <folding />
@@ -3462,7 +3463,6 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_bluetooth_list.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Config_Activity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Personne.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/GroupeAdapter.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Mqtt_client.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
@@ -3472,6 +3472,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Groupe_Activity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_groupe_.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java" />
       </list>
     </option>
   </component>
@@ -4036,7 +4037,14 @@
       <option name="project" value="LOCAL" />
       <updated>1490998132375</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Push problem">
+      <created>1491003456960</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1491003456960</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -4120,7 +4128,8 @@
     <MESSAGE value="Merge branch 'fusion' of https://github.com/ultratrail/mobapp2 into fusion&#10;&#10;# Conflicts:&#10;#&#9;.idea/libraries/constraint_layout_1_0_2.xml&#10;#&#9;.idea/workspace.xml&#10;" />
     <MESSAGE value="m&#10;&#10;" />
     <MESSAGE value="Finally merged&#10;No modification of structures, Groupe_Activity still creates an ArrayList of String but MapsActivity still works on HashMap&lt;String,Personne&gt;" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finally merged&#10;No modification of structures, Groupe_Activity still creates an ArrayList of String but MapsActivity still works on HashMap&lt;String,Personne&gt;" />
+    <MESSAGE value="Push problem" />
+    <option name="LAST_COMMIT_MESSAGE" value="Push problem" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XDebuggerManager">
@@ -4128,13 +4137,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mqtt_service/src/androidTest/java/com/example/mqtt_service/MqttV3Receiver.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -4371,14 +4373,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/BluetoothLeService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
@@ -4462,14 +4456,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/GroupeAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/DeviceControlActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
@@ -4478,24 +4464,50 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/GroupeAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-25/android/widget/ArrayAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="199" column="33" selection-start-line="199" selection-start-column="33" selection-end-line="199" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Groupe_Activity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="62" column="0" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        <state relative-caret-position="367">
+          <caret line="64" column="71" selection-start-line="64" selection-start-column="71" selection-end-line="64" selection-end-column="71" />
           <folding>
-            <element signature="e#1441#1906#0" expanded="true" />
-            <element signature="e#1905#1906#0" expanded="true" />
+            <element signature="e#1558#2786#0" expanded="true" />
+            <element signature="e#1776#2066#0" expanded="true" />
+            <element signature="e#2065#2066#0" expanded="true" />
+            <element signature="e#2785#2786#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_groupe_.xml">
-      <provider editor-type-id="android-designer2">
+      <provider selected="true" editor-type-id="android-designer2">
         <state />
       </provider>
-      <provider selected="true" editor-type-id="text-editor">
+      <provider editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/teamtreehouse/com/iamhere/Membres.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="14" column="5" selection-start-line="14" selection-start-column="5" selection-end-line="14" selection-end-column="5" />
           <folding />
         </state>
       </provider>

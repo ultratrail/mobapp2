@@ -13,7 +13,6 @@ public class Membres extends ArrayList<String> {
     public static Membres getInstance() {
         return ourInstance;
     }
-    //TODO faire en sorte que l'on ne puisse pas ajouter deux fois la meme personne
     private Membres() {
         //TODO recuperer cette liste dans un fichier
         add("Client1");

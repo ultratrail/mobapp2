@@ -33,15 +33,15 @@
         android:layout_height="32dp" />
 
     <TextView
-        android:text="TextView"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/Add_someone"
-        android:layout_toRightOf="@+id/Add_someone"
-        android:layout_toEndOf="@+id/Add_someone"
         android:layout_marginLeft="31dp"
         android:layout_marginStart="31dp"
-        android:id="@+id/textView" />
+        android:layout_toEndOf="@+id/Add_someone"
+        android:layout_toRightOf="@+id/Add_someone"
+        android:text="Groupe" />
 
     <ListView
         android:layout_width="match_parent"
