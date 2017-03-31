@@ -42,7 +42,7 @@ public class Groupe_Activity extends AppCompatActivity {
                 id_a_ajouter=textView.getText().toString();
                 Log.i("ST",id_a_ajouter);
                 UltraTeamApplication.getInstance().getAdapter().add(id_a_ajouter);// ajoute la personne dans ultrateam
-                textView.setText("entrez un nom");
+                //textView.setText("entrez un nom");
             }
         });
     }
