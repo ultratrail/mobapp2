@@ -413,7 +413,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private Personne getPersonneLaPlusProche(LatLng position){
-        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+        Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         Personne personneLaplusProche = personnes.get(0);
         double distanceChef= distance(personneLaplusProche.getPosition(), position);
@@ -445,10 +445,10 @@ public class MapsActivity extends FragmentActivity implements
     public boolean onMarkerClick(Marker marker) {
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-        LatLng posChef  = personnes.get(0).getPosition();
+
         if(marker.getTitle()=="Point de rdv"){
-            Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-            LatLng posChef  = personnes.get(0).getPosition();
+            //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+            LatLng posChef  = personnes.get("you").getPosition();
 
             LatLng posMembre = marker.getPosition();
 
