@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -69,29 +71,29 @@ public class MainActivity extends AppCompatActivity {
         goToMapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(BLUETOOTH_SERVICE_REGISTER) {
-                    unregisterReceiver(mGattUpdateReceiver);
-                    BLUETOOTH_SERVICE_REGISTER = false;
-                }
-                SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
-                Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-                for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++)
-                    personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, null));
-                if (UltraTeamApplication.getInstance().getAdapter().getCount() == 0) {
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("Alert");
-                    alertDialog.setMessage("Vous devez être au moins 1 par groupe! Allez configurer tout ça dans Config Groupe :)");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                if(UltraTeamApplication.getInstance().getGroupeInitialized()){
+                    if(BLUETOOTH_SERVICE_REGISTER) {
+                        unregisterReceiver(mGattUpdateReceiver);
+                        BLUETOOTH_SERVICE_REGISTER = false;
+                    }
+                    SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
+                    Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+                    for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++)
+                        personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, null));
+
+                        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                        startActivity(intent);
+                    
                 } else {
-                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(intent);
+                    Context context = getApplicationContext();
+                    CharSequence text = "La gestion des groupes n'est pas faites";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
                 }
+
+
             }
         });
 

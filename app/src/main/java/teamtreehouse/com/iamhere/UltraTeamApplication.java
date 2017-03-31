@@ -87,4 +87,15 @@ public class UltraTeamApplication extends Application {
         //TODO possible problemme avec le marker
     }
 
+
+    private boolean groupeInitialized;
+
+    public boolean getGroupeInitialized (){
+        return groupeInitialized;
+    }
+
+    public void setGroupeInitialized (boolean b){
+        groupeInitialized=b;
+    }
+
 }
