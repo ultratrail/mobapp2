@@ -62,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
 
-                Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+                Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
                 for (int i = 1; i<= sb.getProgress(); i++){
-                    personnes.put(i,new Personne("Zimoule " + i, i, null));
+                    personnes.put("Zimoule"+i,new Personne("Zimoule " + i, i, null));
                 }
 
                 Intent intent = new Intent(MainActivity.this, MapsActivity.class);

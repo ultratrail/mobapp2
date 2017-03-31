@@ -155,7 +155,7 @@ public class MapsActivity extends FragmentActivity implements
 
         int nombrePersonne = UltraTeamApplication.getInstance().getNbPersonnes();
 
-        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+        Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         Random random = new Random();
 
@@ -204,17 +204,17 @@ public class MapsActivity extends FragmentActivity implements
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
-        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+        Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         //TODO Le marker du chef sera pas mis à jour
-        if (personnes.containsKey(0)) {
-            personnes.get(0).setPosition(latLng);
+        if (personnes.containsKey("you")) {
+            personnes.get("you").setPosition(latLng);
         } else {
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
-                    .title("Vous"));
-            personnes.put(0, new Personne("Vous", 0, latLng));
-            personnes.get(0).setMarker(m);
+                    .title("You"));
+            personnes.put("you", new Personne("You", 0, latLng));
+            personnes.get("you").setMarker(m);
 
         }
 
@@ -237,7 +237,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onConnected(Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        //if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -245,14 +245,20 @@ public class MapsActivity extends FragmentActivity implements
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        } else {
-            handleNewLocation(location);
-        }
+
+        // return;
+       // }
+         try {
+             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+             if (location == null) {
+                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+             } else {
+                 handleNewLocation(location);
+             }
+         }
+         catch (SecurityException s){
+             //TODO
+         }
     }
 
     @Override
@@ -438,6 +444,8 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public boolean onMarkerClick(Marker marker) {
 
+        Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+        LatLng posChef  = personnes.get(0).getPosition();
         if(marker.getTitle()=="Point de rdv"){
             Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
             LatLng posChef  = personnes.get(0).getPosition();
