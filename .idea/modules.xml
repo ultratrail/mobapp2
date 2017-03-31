@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/merge_mobapp2.iml" filepath="$PROJECT_DIR$/merge_mobapp2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mobapp2.iml" filepath="$PROJECT_DIR$/mobapp2.iml" />
       <module fileurl="file://$PROJECT_DIR$/mqtt_service/mqtt_service.iml" filepath="$PROJECT_DIR$/mqtt_service/mqtt_service.iml" />
     </modules>
   </component>

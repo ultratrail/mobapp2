@@ -61,9 +61,14 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".BluetoothLeService"
+            android:enabled="true" />
+
         <activity
-            android:name=".Home"
-            android:label="Home"
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,13 +76,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <service
-            android:name=".BluetoothLeService"
-            android:enabled="true" />
-
-        <activity android:name=".MainActivity" />
-        <activity android:name=".Config_Activity" />
         <activity android:name=".Groupe_Activity" />
     </application>
 

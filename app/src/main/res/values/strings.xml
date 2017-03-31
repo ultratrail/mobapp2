@@ -6,7 +6,9 @@
     <string name="title_activity_bluetooth">Bluetooth</string>
     <string name="nbMembre">nombreMembre</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="empty_group_dialog">Vous devez être au moins 1 dans votre groupe!</string>
     <string name="ok">Retour Menu</string>
+    <string name="groupe">Groupe</string>
 
     <!-- Menu items -->
     <string name="menu_connect">Connect</string>

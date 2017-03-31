@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.Marker;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -19,6 +20,8 @@ public class UltraTeamApplication extends Application {
 
     // Oh le beau singleton !!!
     private static UltraTeamApplication singleton;
+
+    public GroupeAdapter adapter;
 
     public static UltraTeamApplication getInstance(){
         return singleton;
@@ -52,6 +55,14 @@ public class UltraTeamApplication extends Application {
 
     public void setBase(Marker m){
         base=m;
+    }
+
+    public void setAdapter(GroupeAdapter g) {
+        adapter = g;
+    }
+
+    public GroupeAdapter getAdapter() {
+        return adapter;
     }
 
     public void setMqtt_client(Mqtt_client mqtt_client) {

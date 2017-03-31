@@ -46,6 +46,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
@@ -162,14 +163,14 @@ public class MapsActivity extends FragmentActivity implements
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
 
-        for (int i = 1; i <= nombrePersonne; i++) {
+        for (int i = 0; i < nombrePersonne; i++) {
             Double randomLat = random.nextDouble() * 2 - 1;
             Double randomLon = random.nextDouble() * 2 - 1;
 
             LatLng randomPosition = new LatLng(45.166672 + randomLat, 5.71667 + randomLon);
-            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(i).getNom()));
-            personnes.get(i).setMarker(m);
-            personnes.get(i).setPosition(randomPosition);
+            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).getNom()));
+            personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setMarker(m);
+            personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setPosition(randomPosition);
 
             builder.include(m.getPosition());
         }
