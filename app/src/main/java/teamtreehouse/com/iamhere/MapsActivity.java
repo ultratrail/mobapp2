@@ -170,6 +170,8 @@ public class MapsActivity extends FragmentActivity implements
             LatLng randomPosition = new LatLng(45.166672 + randomLat, 5.71667 + randomLon);
             Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).getNom()));
             personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setMarker(m);
+
+
             personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setPosition(randomPosition);
 
             builder.include(m.getPosition());
@@ -208,23 +210,23 @@ public class MapsActivity extends FragmentActivity implements
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         //TODO Le marker du chef sera pas mis à jour
-        if (personnes.containsKey("you")) {
-            personnes.get("you").setPosition(latLng);
-        } else {
+
+        personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
+
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title("You"));
-            personnes.put("you", new Personne("You", 0, latLng));
-            personnes.get("you").setMarker(m);
 
-        }
+        //personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setMarker(m);
+
+
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
 
         if(UltraTeamApplication.getInstance().getBase()==null){
 
-            Marker m=mMap.addMarker(new MarkerOptions()
+            m=mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
                     .title("Point de rdv")
                     .draggable(true));
@@ -416,7 +418,7 @@ public class MapsActivity extends FragmentActivity implements
     private Personne getPersonneLaPlusProche(LatLng position){
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
-        Personne personneLaplusProche = personnes.get(0);
+        Personne personneLaplusProche = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0));
         double distanceChef= distance(personneLaplusProche.getPosition(), position);
 
         Iterator<Personne> itr = personnes.values().iterator();
@@ -447,9 +449,9 @@ public class MapsActivity extends FragmentActivity implements
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
-        if(marker.getTitle()=="Point de rdv"){
+        if(marker.getTitle()!="Point de rdv"){
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-            LatLng posChef  = personnes.get("you").getPosition();
+            LatLng posChef  = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
 
             LatLng posMembre = marker.getPosition();
 
