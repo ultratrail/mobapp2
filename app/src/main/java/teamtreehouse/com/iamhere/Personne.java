@@ -62,10 +62,18 @@ final float distance = 1;
     }
 
     public Personne(String nom, int id, LatLng position) {
-        // this.nom = nom;
+        this.nom = nom;
         this.id = id;
         this.position = position;
         this.isPositionSet=true;
+        this.isHeartRate = false;
+    }
+
+    public Personne(String nom, int id) {
+        this.id = id;
+        this.nom = nom;
+        this.isPositionSet = false;
+        this.isHeartRate = false;
     }
 
     public boolean message_needed() {
@@ -83,9 +91,10 @@ final float distance = 1;
     }
 
     public Personne(int id) {
-        // this.nom = nom;
+        //  this.nom = nom;
         this.id = id;
         this.isPositionSet=false;
+        this.isHeartRate = false;
     }
 
     public int getId() {

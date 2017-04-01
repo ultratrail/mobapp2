@@ -31,6 +31,7 @@ public class UltraTeamApplication extends Application {
     public void onCreate() {
         super.onCreate();
         personnes=new Hashtable<>();
+        personnes.put("you", new Personne("Client2", 0));//TODO arrêter de faire n'importe quoi
         singleton = this;
         groupeInitialized = false;
     }
@@ -73,7 +74,7 @@ public class UltraTeamApplication extends Application {
 
     public void add_someone(String s){
         personnes.put(s,new Personne(s,0,new LatLng(0,0)));
-        //mqtt_client.subscribeToTopic(s);
+        mqtt_client.subscribeToTopic(s);
     }
     public void setPosition(String s, Point p){
         LatLng l = new LatLng(p.x,p.y);

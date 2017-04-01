@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.RoundCap;
 import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -153,8 +154,6 @@ public class MapsActivity extends FragmentActivity implements
      */
     private void setUpMap() {
 
-
-
         int nombrePersonne = UltraTeamApplication.getInstance().getNbPersonnes();
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
@@ -163,7 +162,7 @@ public class MapsActivity extends FragmentActivity implements
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-
+        /*
         for (int i = 0; i < nombrePersonne; i++) {
             Double randomLat = random.nextDouble() * 2 - 1;
             Double randomLon = random.nextDouble() * 2 - 1;
@@ -178,12 +177,23 @@ public class MapsActivity extends FragmentActivity implements
             builder.include(m.getPosition());
         }
 
-        //Centrer la camera pour voir tous les markers
+        */
+
+        for (Map.Entry<String, Personne> e : personnes.entrySet()) {
+            if (e.getValue().isPositionSet()) {
+
+                Marker m = mMap.addMarker(new MarkerOptions().position(e.getValue().getPosition()).title(e.getValue().getNom()));
+                e.getValue().setMarker(m);
+                builder.include(e.getValue().getPosition());
+            }
+        }
+        //TODO decommentter
+      /*  //Centrer la camera pour voir tous les markers
         LatLngBounds bounds = builder.build();
         int padding = 0 ;
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
         mMap.moveCamera(cu);
-
+    */
 
 
 
@@ -227,6 +237,7 @@ public class MapsActivity extends FragmentActivity implements
             usbService.write(message.loraPayload());
 
             Log.i("LORA", "envoi du message :" + message.toString());
+            UltraTeamApplication.getInstance().getMqtt_client().publishMessage();
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -456,10 +467,10 @@ public class MapsActivity extends FragmentActivity implements
     public boolean onMarkerClick(Marker marker) {
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-
+        Log.i("CARTE", "title : " + marker.getTitle());
         if (!marker.getTitle().contains("Point de rdv")) {
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-            //TODO dans doute "you"
+
             LatLng posChef  = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
 
             LatLng posMembre = marker.getPosition();

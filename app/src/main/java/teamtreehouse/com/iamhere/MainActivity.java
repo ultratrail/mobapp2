@@ -22,6 +22,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mDataField;
     public static boolean BLUETOOTH_SERVICE_ACTIVE;
     private boolean BLUETOOTH_SERVICE_REGISTER;
+
+    public Button valider;
 
 
     @Override
@@ -67,6 +71,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //TODO
+        valider = (Button) findViewById(R.id.valider);
+        valider.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Personne p = UltraTeamApplication.getInstance().getPersonnes().get("you");
+                TextView latitude = (TextView) findViewById(R.id.latitude2);
+                TextView longitude = (TextView) findViewById(R.id.longitude);
+                double lat = Double.valueOf(latitude.getText().toString());
+                double lon = Double.valueOf(longitude.getText().toString());
+                LatLng latLng = new LatLng(lat, lon);
+                p.setPosition(latLng);
+            }
+        });
+
+
         Button goToMapActivity = (Button) findViewById(R.id.goToMapActivity);
         goToMapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,12 +98,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                     //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
                     Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-                    for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++)
-                        personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, null));
+                    LatLng mexico = new LatLng(19, -99);
+                    for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++) {
+                        mexico = new LatLng(mexico.latitude + 1, mexico.longitude + 1);
+                        personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, mexico));
 
                         Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                         startActivity(intent);
-                    
+                    }
                 } else {
                     Context context = getApplicationContext();
                     CharSequence text = "La gestion des groupes n'est pas faites";

@@ -206,15 +206,18 @@ public class Mqtt_client  {
 
         try {
             MqttMessage message = new MqttMessage();
-            LatLng l = ultraTeamApplication.getPersonnes().get("you").getPosition();
-            Point p = new Point((int)l.latitude,(int)l.longitude);
-            Message m = new Message(UltraTeamApplication.getInstance().getPersonnes().get("you"));
+            Personne personne = ultraTeamApplication.getPersonnes().get("you");
+            if (personne.isPositionSet()) {
+                LatLng l = ultraTeamApplication.getPersonnes().get("you").getPosition();
 
-            message.setPayload(m.toString().getBytes());
-            message.setPayload(publishMessage.getBytes());
-            mqttAndroidClient.publish(publishTopic, message);// TODO bizarre
-            Log.i("MQTT","Message Published...  "+publishTopic+" : "+message);
+                Point p = new Point((int) l.latitude, (int) l.longitude);
+                Message m = new Message(UltraTeamApplication.getInstance().getPersonnes().get("you"));
 
+                message.setPayload(m.toString().getBytes());
+                message.setPayload(publishMessage.getBytes());
+                mqttAndroidClient.publish(publishTopic, message);// TODO bizarre
+                Log.i("MQTT", "Message Published...  " + publishTopic + " : " + message);
+            }
             if(!mqttAndroidClient.isConnected()){
                 Log.i("MQTT",mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
                 //addToHistory(mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
