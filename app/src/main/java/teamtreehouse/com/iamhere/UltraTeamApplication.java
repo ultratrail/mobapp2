@@ -31,6 +31,7 @@ public class UltraTeamApplication extends Application {
         super.onCreate();
         personnes=new Hashtable<>();
         singleton = this;
+        groupeInitialized = false;
     }
 
     private Mqtt_client mqtt_client;

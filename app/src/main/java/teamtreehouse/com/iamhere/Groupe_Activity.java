@@ -38,6 +38,7 @@ public class Groupe_Activity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         list = (ListView) findViewById(R.id.list);
         UltraTeamApplication.getInstance().setAdapter(new GroupeAdapter(Groupe_Activity.this, membres));
+        UltraTeamApplication.getInstance().setGroupeInitialized(true);
         list.setAdapter(UltraTeamApplication.getInstance().getAdapter());
 
         button_add_someone = (Button) findViewById(R.id.Add_someone);

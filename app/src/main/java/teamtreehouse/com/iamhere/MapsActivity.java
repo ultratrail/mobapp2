@@ -32,6 +32,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -229,7 +230,8 @@ public class MapsActivity extends FragmentActivity implements
             m=mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
                     .title("Point de rdv")
-                    .draggable(true));
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
             UltraTeamApplication.getInstance().setBase(m);
 
@@ -449,7 +451,7 @@ public class MapsActivity extends FragmentActivity implements
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
-        if(marker.getTitle()!="Point de rdv"){
+        if (!marker.getTitle().contains("Point de rdv")) {
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
             LatLng posChef  = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
 

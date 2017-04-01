@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         unregisterReceiver(mGattUpdateReceiver);
                         BLUETOOTH_SERVICE_REGISTER = false;
                     }
-                    SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
+                    //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
                     Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
                     for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++)
                         personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, null));
@@ -129,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
-        sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
+        /*sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 TextView tv = (TextView) findViewById(R.id.textViewNbMembre);
@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
             }
-        });
+        });*/
     }
 
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {

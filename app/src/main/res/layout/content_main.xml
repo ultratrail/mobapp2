@@ -10,19 +10,6 @@
     tools:showIn="@layout/activity_main">
 
 
-    <TextView
-        android:id="@+id/textViewNbMembre"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_alignTop="@+id/seekBarNombreMembre"
-        android:layout_marginLeft="25dp"
-        android:layout_marginStart="25dp"
-        android:layout_toEndOf="@+id/seekBarNombreMembre"
-        android:layout_toRightOf="@+id/seekBarNombreMembre"
-        android:width="40dp"
-        android:text="1" />
-
     <Button
         android:id="@+id/goToMapActivity"
         android:layout_width="wrap_content"
@@ -31,28 +18,6 @@
 
         android:layout_centerHorizontal="true"
         android:text="Start" />
-
-    <SeekBar
-        android:id="@+id/seekBarNombreMembre"
-        android:layout_width="138dp"
-        android:layout_height="16dp"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_marginLeft="19dp"
-        android:layout_marginStart="19dp"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_toRightOf="@+id/textView"
-        android:max="10"
-        android:progress="1" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/goToMapActivity"
-        android:layout_marginTop="18dp"
-        android:layout_toLeftOf="@+id/goToMapActivity"
-        android:layout_toStartOf="@+id/goToMapActivity"
-        android:text="Nombre de membres" />
 
     <Button
         android:id="@+id/goToBluetoothActivity"
