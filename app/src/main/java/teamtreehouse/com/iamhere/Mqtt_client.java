@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.example.mqtt_service.MqttAndroidClient;
 import com.google.android.gms.maps.model.LatLng;
+import com.example.mqtt_service.*;
 
 //import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.DisconnectedBufferOptions;
@@ -19,6 +20,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+
 import java.util.Map;
 
 /**
@@ -28,9 +30,9 @@ import java.util.Map;
 public class Mqtt_client  {
     MqttAndroidClient mqttAndroidClient;
 
-    final String serverUri = "tcp://iot.eclipse.org:1883"; //TODO c'est la bonne ?
- //   final String serverUri = "vps364763.ovh.net";
-
+    // final String serverUri = "tcp://iot.eclipse.org:1883"; //TODO c'est la bonne ?
+    //final String serverUri = "vps364763.ovh.net";
+    final String serverUri = "tcp://vps364763.ovh.net:1883";
     String clientId = "Client1"; //TODO faire en sorte que ce soit lier a l'ID de la personnes
     final String subscriptionTopic = "exampleAndroidTopic";
     final String publishTopic = clientId;
@@ -41,7 +43,7 @@ public class Mqtt_client  {
 
     public Mqtt_client(Context applicationContext){
         //clientId = clientId + System.currentTimeMillis();
-        Log.i("MQTT", "Demarage de MQTT"+ serverUri);
+        Log.i("MQTT", "Demarage de MQTT sur le serveur : " + serverUri);
         mqttAndroidClient = new MqttAndroidClient(applicationContext, serverUri, clientId);
         mqttAndroidClient.setCallback(new MqttCallbackExtended() {
             @Override

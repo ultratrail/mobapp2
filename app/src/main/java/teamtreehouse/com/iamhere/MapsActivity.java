@@ -528,7 +528,7 @@ public class MapsActivity extends FragmentActivity implements
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
                     String data = (String) msg.obj;
                     //mActivity.get().add.append(data);
-
+                    //TODO traiter le message
                     mActivity.get().updateMarker(data);
                     break;
             }

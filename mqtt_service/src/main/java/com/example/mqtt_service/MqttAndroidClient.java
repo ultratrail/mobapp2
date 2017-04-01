@@ -95,8 +95,8 @@ public class MqttAndroidClient extends BroadcastReceiver implements
 		MANUAL_ACK
 	}
 
-	private static final String SERVICE_NAME = "org.eclipse.paho.android.service.MqttService";
-
+	//private static final String SERVICE_NAME = "org.eclipse.paho.android.service.MqttService";
+	private static final String SERVICE_NAME = "com.example.mqtt_service.MqttService";
 	private static final int BIND_SERVICE_FLAG = 0;
 
 	private static final ExecutorService pool = Executors.newCachedThreadPool();
