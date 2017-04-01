@@ -209,7 +209,7 @@ public class MapsActivity extends FragmentActivity implements
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-
+        personnes.get("you").setPosition(latLng);
         //TODO Le marker du chef sera pas mis à jour
         //TODO c'est pas getItem("you")
         personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
@@ -225,6 +225,8 @@ public class MapsActivity extends FragmentActivity implements
             teamtreehouse.com.iamhere.Message message = new teamtreehouse.com.iamhere.Message(personnes.get("you"));
             //TODO envoyer le message
             usbService.write(message.loraPayload());
+
+            Log.i("LORA", "envoi du message :" + message.toString());
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
@@ -534,11 +536,12 @@ public class MapsActivity extends FragmentActivity implements
                     String data = (String) msg.obj;
                     //mActivity.get().add.append(data);
                     teamtreehouse.com.iamhere.Message message = new teamtreehouse.com.iamhere.Message(data);
-                    Personne personne = UltraTeamApplication.getInstance().getPersonnes().get(message.getId());
-                    //personne.modifier(message);
-                    //TODO traiter le message
+                    //Personne personne= UltraTeamApplication.getInstance().getPersonnes().get( message.getId());
+                    UltraTeamApplication.getInstance().traiterMessage(message);
+                    //TODO verifier que ca marche
 
                     mActivity.get().updateMarker(data);
+                    Log.i("LORA", "Message Received :" + message.toString());
                     break;
             }
         }

@@ -11,14 +11,47 @@ import java.util.Date;
 
 class Personne {
 //TODO ajouter le rythme cardiaque
-final float distance = 20;
+final float distance = 1;
+
+    public String getNom() {
+        return nom;
+    }
+
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+
     private String nom;
     private int id;
     private boolean isPositionSet;
     private LatLng position;
     private Marker marker;
     private LatLng oldPosition;
+
+    public Date getDernier_message_recu() {
+        return dernier_message_recu;
+    }
+
+    public void setDernier_message_recu(Date dernier_message_recu) {
+        this.dernier_message_recu = dernier_message_recu;
+    }
+
     private Date dernier_message_recu;
+    private int HeartRate;
+    private boolean isHeartRate;
+
+    public int getHeartRate() {
+        return HeartRate;
+    }
+
+    public void setHeartRate(int heartRate) {
+        HeartRate = heartRate;
+        isHeartRate = true;
+    }
+
+    public boolean isHeartRate() {
+        return isHeartRate;
+    }
 
     public Marker getMarker() {
         return marker;
@@ -29,29 +62,30 @@ final float distance = 20;
     }
 
     public Personne(String nom, int id, LatLng position) {
-        this.nom = nom;
+        // this.nom = nom;
         this.id = id;
         this.position = position;
         this.isPositionSet=true;
     }
 
     public boolean message_needed() {
-        return (position.latitude - oldPosition.latitude) >= distance || (position.longitude - oldPosition.longitude) >= distance;
+//        float distance_temp = (position.latitude - oldPosition.latitude) >= distance || (position.longitude - oldPosition.longitude) >= distance; TODO, faire une jolie distance
+        if (oldPosition == null) {
+            oldPosition = position;
+            return true;
+        }
+
+        boolean b = (position.latitude - oldPosition.latitude) >= distance || (position.longitude - oldPosition.longitude) >= distance;
+        if (b) {
+            oldPosition = position;
+            return true;
+        } else return false;
     }
 
-    public Personne(String nom, int id) {
-        this.nom = nom;
+    public Personne(int id) {
+        // this.nom = nom;
         this.id = id;
         this.isPositionSet=false;
-    }
-
-
-    public String getNom() {
-        return nom;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
     }
 
     public int getId() {

@@ -165,7 +165,7 @@ public class Message {
         return seq;
     }
 
-    private boolean isHeartRate() {
+    public boolean isHeartRate() {
         if ((options & 0x2) == 2)
             return true;
         else return false;

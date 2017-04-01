@@ -73,8 +73,10 @@ public class Mqtt_client  {
                 Log.i("MQTT","Incoming message: " + new String(message.getPayload()));
                 //TODO en faire quelque chose
                 //Recuperer les info dans le message.
-                Message m = new Message(message.toString());
-                ultraTeamApplication.setPosition(m.getId(),m.getPoint());
+
+                Message message2 = new Message(message.getPayload());
+                UltraTeamApplication.getInstance().traiterMessage(message2);
+
                 //addToHistory("Incoming message: " + new String(message.getPayload()));
             }
 
@@ -144,9 +146,8 @@ public class Mqtt_client  {
                     // message Arrived!
                     Log.i("MQTT", "Message incomming2 dans subscribe sans topic special");
                     System.out.println("Message: " + topic + " : " + new String(message.getPayload()));
-                    Message m = new Message(message.toString());
-                    ultraTeamApplication.setPosition(m.getId(),m.getPoint());
-
+                    Message message2 = new Message(message.getPayload());
+                    UltraTeamApplication.getInstance().traiterMessage(message2);
                 }
             });
 
@@ -181,9 +182,8 @@ public class Mqtt_client  {
                     // message Arrived!
                     Log.i("MQTT", "Message incomming2 dans subscribe avec topic : "+ topic);
                     System.out.println("Message: " + topic + " : " + new String(message.getPayload()));
-                    Message m = new Message(message.toString());
-                    ultraTeamApplication.setPosition(m.getId(),m.getPoint());
-
+                    Message message2 = new Message(message.getPayload());
+                    UltraTeamApplication.getInstance().traiterMessage(message2);
                 }
             });
 
@@ -208,11 +208,11 @@ public class Mqtt_client  {
             MqttMessage message = new MqttMessage();
             LatLng l = ultraTeamApplication.getPersonnes().get("you").getPosition();
             Point p = new Point((int)l.latitude,(int)l.longitude);
-            Message m = new Message(this.clientId,p);
+            Message m = new Message(UltraTeamApplication.getInstance().getPersonnes().get("you"));
 
             message.setPayload(m.toString().getBytes());
             message.setPayload(publishMessage.getBytes());
-            mqttAndroidClient.publish(publishTopic, message);
+            mqttAndroidClient.publish(publishTopic, message);// TODO bizarre
             Log.i("MQTT","Message Published...  "+publishTopic+" : "+message);
 
             if(!mqttAndroidClient.isConnected()){

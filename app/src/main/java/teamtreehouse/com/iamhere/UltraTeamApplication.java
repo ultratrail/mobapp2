@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.security.acl.Group;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 
 /**
@@ -97,6 +98,26 @@ public class UltraTeamApplication extends Application {
 
     public void setGroupeInitialized (boolean b){
         groupeInitialized=b;
+    }
+
+    public void traiterMessage(Message message) {
+        if (message.checked()) {
+            String nom = message.getId();
+            if (UltraTeamApplication.getInstance().getPersonnes().containsKey(nom)) {
+                Personne p = UltraTeamApplication.getInstance().getPersonnes().get(nom);
+                if (message.getDate().after(p.getDernier_message_recu())) {
+                    p.setPosition(message.getPos());
+                    if (message.isSOS()) {
+                        //TODO faire quelque chose
+                    }
+                    if (message.isHeartRate()) {
+                        p.setHeartRate(message.getHeartRate());
+                    }
+                    p.setDernier_message_recu(message.getDate());
+                }
+
+            }
+        }
     }
 
 }
