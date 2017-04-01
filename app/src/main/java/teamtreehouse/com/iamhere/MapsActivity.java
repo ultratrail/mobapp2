@@ -211,17 +211,21 @@ public class MapsActivity extends FragmentActivity implements
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         //TODO Le marker du chef sera pas mis à jour
-
+        //TODO c'est pas getItem("you")
         personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
 
             Marker m = mMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .title("You"));
-
+        //TODO pourquoi en commentaire ?
         //personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setMarker(m);
 
 
-
+        if (personnes.get("you").message_needed()) {
+            teamtreehouse.com.iamhere.Message message = new teamtreehouse.com.iamhere.Message(personnes.get("you"));
+            //TODO envoyer le message
+            usbService.write(message.loraPayload());
+        }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
 
@@ -338,7 +342,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private void updateMarker(String data) {
-
+//TODO pourquoi commenter ?
        /* String id = null;
         Double lat = null;
         Double lon = null;
@@ -453,6 +457,7 @@ public class MapsActivity extends FragmentActivity implements
 
         if (!marker.getTitle().contains("Point de rdv")) {
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+            //TODO dans doute "you"
             LatLng posChef  = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
 
             LatLng posMembre = marker.getPosition();
@@ -528,7 +533,11 @@ public class MapsActivity extends FragmentActivity implements
                 case UsbService.MESSAGE_FROM_SERIAL_PORT:
                     String data = (String) msg.obj;
                     //mActivity.get().add.append(data);
+                    teamtreehouse.com.iamhere.Message message = new teamtreehouse.com.iamhere.Message(data);
+                    Personne personne = UltraTeamApplication.getInstance().getPersonnes().get(message.getId());
+                    //personne.modifier(message);
                     //TODO traiter le message
+
                     mActivity.get().updateMarker(data);
                     break;
             }
@@ -544,6 +553,7 @@ public class MapsActivity extends FragmentActivity implements
         public void onServiceConnected(ComponentName arg0, IBinder arg1) {
             usbService = ((UsbService.UsbBinder) arg1).getService();
             usbService.setHandler(mHandler);
+
         }
 
         @Override
