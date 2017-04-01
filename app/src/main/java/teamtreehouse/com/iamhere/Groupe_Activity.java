@@ -210,13 +210,14 @@ public class Groupe_Activity extends AppCompatActivity {
                     // prepare the file for reading
                     InputStreamReader inputreader = new InputStreamReader(instream);
                     BufferedReader buffreader = new BufferedReader(inputreader);
-                    UltraTeamApplication.getInstance().getAdapter().clear();
                     String line;
 
                     // read every line of the file into the line-variable, on line at the time
                     do {
                         line = buffreader.readLine();
-                        UltraTeamApplication.getInstance().getAdapter().add(line);
+                        if (!membres.contains(line)) {
+                            UltraTeamApplication.getInstance().getAdapter().add(line);
+                        }
                     } while (line != null);
                     instream.close();
                 }
