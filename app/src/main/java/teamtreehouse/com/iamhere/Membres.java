@@ -14,13 +14,6 @@ public class Membres extends ArrayList<String> {
         return ourInstance;
     }
     private Membres() {
-        //TODO recuperer cette liste dans un fichier
-        add("Client1");
-        add("Benoit");
-        add("Cyril");
-        add("David");
-        add("Eloise");
-        add("Florent");
     }
 
     @Override

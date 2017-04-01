@@ -23,14 +23,42 @@
         android:inputType="textPersonName" />
 
 
-    <Button
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:id="@+id/Add_someone"
-         android:text="Add Someone"/>
-    <Space
-        android:layout_width="fill_parent"
-        android:layout_height="32dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="20dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context="teamtreehouse.com.iamhere.MainActivity"
+        tools:showIn="@layout/activity_main">
+
+
+        <Button
+            android:id="@+id/Add_someone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Add" />
+
+        <Button
+            android:id="@+id/import_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Import" />
+
+        <Button
+            android:id="@+id/create_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="Create" />
+
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/textView"
@@ -44,10 +72,10 @@
         android:text="Groupe" />
 
     <ListView
+        android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:id="@+id/list" />
+        android:layout_alignParentStart="true" />
+
 </LinearLayout>
