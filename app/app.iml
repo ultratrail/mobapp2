@@ -169,6 +169,7 @@
     <orderEntry type="library" exported="" name="support-annotations-25.2.0" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-25.2.0" level="project" />
     <orderEntry type="module" module-name="mqtt_service" exported="" />
+    <orderEntry type="library" exported="" name="android-android-25" level="project" />
     <orderEntry type="library" exported="" name="org.eclipse.paho.client.mqttv3-1.1.0" level="project" />
   </component>
 </module>
