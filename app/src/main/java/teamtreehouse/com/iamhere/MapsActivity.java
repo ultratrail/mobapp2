@@ -109,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public void onClick(View v) {
                 Context context = getApplicationContext();
-                CharSequence text = "La fonction SOS, n'a pas encoré faites, désolé pour toi.";
+                CharSequence text = "La fonction SOS, n'a pas encore été faites, désolé pour toi.";
                 int duration = Toast.LENGTH_SHORT;
 
                 Toast toast = Toast.makeText(context, text, duration);

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
@@ -78,6 +79,17 @@ public class Groupe_Activity extends AppCompatActivity {
                 // execute this when the downloader must be fired
                 final DownloadTask downloadTask = new DownloadTask(Groupe_Activity.this);
                 downloadTask.execute("https://raw.githubusercontent.com/ultratrail/mobapp2/master/groupes/" + file_url + ".txt");
+            }
+        });
+
+        button_create_group = (Button) findViewById(R.id.create_group);
+        button_create_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent intent = new Intent(Groupe_Activity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
 
