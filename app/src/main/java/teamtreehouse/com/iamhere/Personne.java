@@ -2,6 +2,7 @@ package teamtreehouse.com.iamhere;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Date;
 
@@ -25,7 +26,7 @@ final float distance = 1;
     private int id;
     private boolean isPositionSet;
     private LatLng position;
-    private Marker marker;
+    private MarkerOptions marker;
     private LatLng oldPosition;
 
     public Date getDernier_message_recu() {
@@ -36,7 +37,7 @@ final float distance = 1;
         this.dernier_message_recu = dernier_message_recu;
     }
 
-    private Date dernier_message_recu;
+    private Date dernier_message_recu= new Date((long)0);
     private int HeartRate;
     private boolean isHeartRate;
 
@@ -53,11 +54,11 @@ final float distance = 1;
         return isHeartRate;
     }
 
-    public Marker getMarker() {
+    public MarkerOptions getMarker() {
         return marker;
     }
 
-    public void setMarker(Marker marker) {
+    public void setMarker(Marker markerOption) {
         this.marker = marker;
     }
 
@@ -67,6 +68,7 @@ final float distance = 1;
         this.position = position;
         this.isPositionSet=true;
         this.isHeartRate = false;
+
     }
 
     public Personne(String nom, int id) {
@@ -91,7 +93,7 @@ final float distance = 1;
     }
 
     public Personne(int id) {
-        //  this.nom = nom;
+
         this.id = id;
         this.isPositionSet=false;
         this.isHeartRate = false;
@@ -112,7 +114,16 @@ final float distance = 1;
     public void setPosition(LatLng position) {
         this.position = position;
         this.isPositionSet=true;
+        //TODO verifier que la map est refresh
+        //envoyer un message mqtt
+        UltraTeamApplication.getInstance().getMqtt_client().publishMessage();
+
+        //peut necesite de rajouter le marqueur a la map...
+
     }
+
+
+
 
     public boolean isPositionSet() {
         return isPositionSet;

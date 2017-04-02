@@ -99,7 +99,8 @@ public class Groupe_Activity extends AppCompatActivity {
                 id_a_ajouter=textView.getText().toString();
                 Log.i("ST",id_a_ajouter);
                 if (!membres.contains(id_a_ajouter)) {
-                    UltraTeamApplication.getInstance().getAdapter().add(id_a_ajouter);// ajoute la personne dans ultrateam
+                    UltraTeamApplication.getInstance().getAdapter().add(id_a_ajouter);
+                    UltraTeamApplication.getInstance().add_someone(id_a_ajouter);// ajoute la personne dans ultrateam
                 } else {
                     Context context = getApplicationContext();
                     CharSequence text = "L'identifiant doit être unique!";
@@ -108,7 +109,7 @@ public class Groupe_Activity extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                 }
-                //textView.setText("entrez un nom");
+
             }
         });
     }

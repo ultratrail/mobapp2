@@ -41,11 +41,11 @@ public class Message {
 
     private ByteOrder byteOrder;
 
-    private String id;
+    private String nom;
     private short heartRate;
     private byte[] loraPayload;
 
-    private byte options;
+    private byte options; // id size, heartRate, sos
     private short seq; //sequence number of the message
 
     LatLng coord;
@@ -73,8 +73,8 @@ public class Message {
         decodeLoraPayload(message);
     }
 
-    public Message(String id, LatLng coord) {
-        this.id=id;
+    public Message(String nom , LatLng coord) {
+        this.nom=nom;
         this.coord=coord;
         options = 0;
     }
@@ -195,6 +195,9 @@ public class Message {
         return coord;
     }
 
+    private void setNameLength(int l) {
+        options = (byte) (options | (l << 2));
+    }
 
     public byte getOptions() {
         // TODO Auto-generated method stub
@@ -204,6 +207,7 @@ public class Message {
 
     public byte[] loraPayload() {
         // TODO Auto-generated method stub
+        if (loraPayload==null){makeLoraPayload();}
         return loraPayload;
     }
 
@@ -221,38 +225,43 @@ public class Message {
 
 
     public Message(Personne p) {
-        this.id = "" + p.getId();
+        this.nom = p.getNom();
         this.coord = p.getPosition();
 //TODO        this.heartRate = p.getHeartRate();
         setDate(new Date());
         this.options = 0;
 
+        setNameLength(this.nom.length());
     }
 
 
     public Message(String s){
 //        String[] tab=s.split(":");
-        id = s;
+        nom = s;
         options = 0;
         //       coord= new Point(Integer.valueOf(tab[1]),Integer.valueOf(tab[2]));
     }
 
 
-    public void setId (String id){
-        this.id=id;
+    private int getNameLength() {
+        return (loraPayload[0]>>2);
+    }
+
+    public void setNom (String nom){
+        this.nom=nom;
     }
 
     public void setPos(LatLng pos) {
         this.coord = pos;
     }
 
-    public String getId (){
-        return id;
+    public String getNom (){
+        return nom;
     }
 
     @Override
     public String toString (){
-        return "id :" + id + "\nPos" + coord.toString() + "\nheart rate" + heartRate + "\nsos" + isSOS() + "\nbluetooth->heartRate" + isHeartRate() + "\nseq : " + getSeq() + "\ntime :" + getDate();
+        return "Nom :" + nom + "\nPos" + coord.toString() + "\nheart rate" + heartRate + "\nsos" + isSOS() + "\nbluetooth->heartRate" + isHeartRate() + "\nseq : " + getSeq() + "\ntime :" + getDate()+"\nchecked: "+checked();
     }
 
 
@@ -262,7 +271,8 @@ public class Message {
         //TODO set options
         loraPayload[0] = options;
 
-        byte[] idBytes = id.getBytes();
+        byte[] idBytes = nom.getBytes();
+
         for (int i = 0; i < idBytes.length; i++) {
             loraPayload[1 + i] = idBytes[i];
         }
@@ -315,16 +325,20 @@ public class Message {
 
     }
 
-    public void decodeLoraPayload(byte[] bytesReceived) {
+    private void decodeLoraPayload(byte[] bytesReceived) {
         loraPayload = bytesReceived;
 
         options = bytesReceived[0];
 
-        byte[] idBytes = new byte[20];
-        for (int i = 0; i < 20; i++) {
+
+        int nameLength = getNameLength();
+
+        byte[] idBytes = new byte[nameLength];
+
+        for (int i = 0; i < nameLength; i++) {
             idBytes[i] = bytesReceived[i + 1];
         }
-        id = new String(idBytes);
+        nom = new String(idBytes);
 
 
         coord = getLatLngFromBytes(bytesReceived, 21);

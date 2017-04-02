@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 public class Membres extends ArrayList<String> {
 //    private ArrayList<String> membres;
-
+//TODO si on as le temp remplacer par un simple tableau dans Groupe_Activity
     private static Membres ourInstance = new Membres();
 
     public static Membres getInstance() {
@@ -19,13 +19,13 @@ public class Membres extends ArrayList<String> {
     @Override
     public boolean add(String a_ajouter){
         //TODO surement a faire ailleurs
-        UltraTeamApplication.getInstance().add_someone(a_ajouter);
+        //UltraTeamApplication.getInstance().add_someone(a_ajouter);
         return super.add(a_ajouter);
     }
 
     @Override
     public boolean remove(Object memberName) {
-        UltraTeamApplication.getInstance().remove_someone((String)memberName);
+        //UltraTeamApplication.getInstance().remove_someone((String)memberName);
         return super.remove(memberName);
     }
 }

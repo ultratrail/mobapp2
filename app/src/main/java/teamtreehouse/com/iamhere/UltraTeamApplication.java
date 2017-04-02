@@ -2,6 +2,7 @@ package teamtreehouse.com.iamhere;
 
 import android.app.Application;
 import android.graphics.Point;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -11,6 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -23,6 +25,7 @@ public class UltraTeamApplication extends Application {
     private static UltraTeamApplication singleton;
 
     public GroupeAdapter adapter;
+    public String monID ="Romane";
 
     public static UltraTeamApplication getInstance(){
         return singleton;
@@ -31,7 +34,8 @@ public class UltraTeamApplication extends Application {
     public void onCreate() {
         super.onCreate();
         personnes=new Hashtable<>();
-        personnes.put("you", new Personne("Client2", 0));//TODO arrêter de faire n'importe quoi
+
+        personnes.put("you", new Personne(monID, 0));//TODO arrêter de faire n'importe quoi
         singleton = this;
         groupeInitialized = false;
     }
@@ -43,9 +47,10 @@ public class UltraTeamApplication extends Application {
         return personnes.size();
     }
 
-    public Hashtable<String, Personne> getPersonnes (){
+   /* public Hashtable<String, Personne> getPersonnes (){
         return personnes;
-    }
+    }*/
+
 
     private Marker base;
     public Mqtt_client getMqtt_client() {
@@ -73,7 +78,8 @@ public class UltraTeamApplication extends Application {
     }
 
     public void add_someone(String s){
-        personnes.put(s,new Personne(s,0,new LatLng(0,0)));
+        Log.i("MQTT", "j'ajoute "+s);
+        personnes.put(s,new Personne(s,0,new LatLng(10,10)));
         mqtt_client.subscribeToTopic(s);
     }
     public void setPosition(String s, Point p){
@@ -82,6 +88,7 @@ public class UltraTeamApplication extends Application {
             personnes.put(s,new Personne(s,0,l));
         }
         else personnes.get(s).setPosition(l);
+        // TODO necesite de faire quelque chose avec le marker
     }
 
     public void remove_someone(String s){
@@ -102,12 +109,25 @@ public class UltraTeamApplication extends Application {
     }
 
     public void traiterMessage(Message message) {
-        if (message.checked()) {
-            String nom = message.getId();
-            if (UltraTeamApplication.getInstance().getPersonnes().containsKey(nom)) {
-                Personne p = UltraTeamApplication.getInstance().getPersonnes().get(nom);
+        Log.i("MQTT", "je commence a traiter le message");
+        //if (message.checked()) {
+        Log.i("MQTT", "le message est bon et le nom est : "+ message.getNom() );
+        String nom = message.getNom();
+        Log.i("MQTT", "La Map est : "+personnes.toString());
+            if (personnes.containsKey(nom)) {
+                Log.i("MQTT", "je connais cette personne ");
+                Personne p = personnes.get(nom);
                 if (message.getDate().after(p.getDernier_message_recu())) {
+                    Log.i("MQTT", "la date est bonne ");
                     p.setPosition(message.getPos());
+                    if (p.getMarker()!= null){
+                        Log.i("MQTT", "je change le marker");
+                        p.getMarker().position(message.getPos());
+                        
+                    }
+                    else {
+                        Log.i("MQTT","traitement de message j'ai recu la position de quelqu'un qui n'as pas de marker");
+                    }
                     if (message.isSOS()) {
                         //TODO faire quelque chose
                     }
@@ -117,8 +137,17 @@ public class UltraTeamApplication extends Application {
                     p.setDernier_message_recu(message.getDate());
                 }
 
+
+
+
+
             }
-        }
+            else {
+                Log.i("MQTT", "je ne connais pas cette personne");
+            }
     }
 
+    public Hashtable<String, Personne> getPersonnes() {
+        return personnes;
+    }
 }

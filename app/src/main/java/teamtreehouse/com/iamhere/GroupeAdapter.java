@@ -49,6 +49,7 @@ public class GroupeAdapter extends ArrayAdapter<String> {
                 String thisMember;
                 thisMember = GroupeAdapter.super.getItem(position);
                 GroupeAdapter.super.remove(thisMember);
+                UltraTeamApplication.getInstance().remove_someone(thisMember);
             }
         });
 
@@ -56,6 +57,7 @@ public class GroupeAdapter extends ArrayAdapter<String> {
         //et qu'il puisse la mettre à recycler lorsqu'elle sera sortie de l'écran
         return convertView;
     }
+
 
     private class ItemViewHolder {
         public TextView name;

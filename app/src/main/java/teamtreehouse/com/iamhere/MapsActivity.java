@@ -22,8 +22,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mqtt_service.MqttService;
+import com.example.mqtt_service.MqttServiceConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -45,14 +48,18 @@ import java.lang.ref.WeakReference;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Random;
 import java.util.Set;
+
+import static teamtreehouse.com.iamhere.MainActivity.BLUETOOTH_SERVICE_ACTIVE;
 
 
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
+        LocationListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback{
 
     public static final String TAG = MapsActivity.class.getSimpleName();
 
@@ -73,6 +80,12 @@ public class MapsActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        if (BLUETOOTH_SERVICE_ACTIVE){
+            registerReceiver(mGattUpdateReceiver,makeGattUpdateIntentFilter());
+        }
+
+        registerReceiver(mqttReceiver,mqttReceiverIntentFilter());
         //setUpMapIfNeeded();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -92,10 +105,6 @@ public class MapsActivity extends FragmentActivity implements
 
 
         mHandler = new MyHandler(this);
-
-
-        //listeDesMarkers = new Hashtable<>();
-
 
     }
 
@@ -154,59 +163,45 @@ public class MapsActivity extends FragmentActivity implements
      */
     private void setUpMap() {
 
+
         int nombrePersonne = UltraTeamApplication.getInstance().getNbPersonnes();
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-
+        
         Random random = new Random();
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        /*
-        for (int i = 0; i < nombrePersonne; i++) {
-            Double randomLat = random.nextDouble() * 2 - 1;
-            Double randomLon = random.nextDouble() * 2 - 1;
-
-            LatLng randomPosition = new LatLng(45.166672 + randomLat, 5.71667 + randomLon);
-            Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).getNom()));
-            personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setMarker(m);
 
 
-            personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setPosition(randomPosition);
 
-            builder.include(m.getPosition());
-        }
-
-        */
-
+        //nombre de marker que l'on positionne
+        int nbMarkerSet=0;
         for (Map.Entry<String, Personne> e : personnes.entrySet()) {
             if (e.getValue().isPositionSet()) {
+                nbMarkerSet++;
+                if (e.getValue().getMarker()==null) {
+                    Marker m = mMap.addMarker(new MarkerOptions().position(e.getValue().getPosition()).title(e.getValue().getNom()));
+                    e.getValue().setMarker(m);
+                    builder.include(e.getValue().getPosition());
+                }
+                else {
+                    e.getValue().getMarker().position(e.getValue().getPosition());
+                    mMap.addMarker(e.getValue().getMarker());
 
-                Marker m = mMap.addMarker(new MarkerOptions().position(e.getValue().getPosition()).title(e.getValue().getNom()));
-                e.getValue().setMarker(m);
-                builder.include(e.getValue().getPosition());
+                    builder.include(e.getValue().getPosition());
+                }
             }
         }
-        //TODO decommentter
-      /*  //Centrer la camera pour voir tous les markers
-        LatLngBounds bounds = builder.build();
-        int padding = 0 ;
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,padding);
-        mMap.moveCamera(cu);
-    */
-
-
-
-
-
-
-       /* //Comme je peux pas test avec mon tél je mais des positions random pour tester
-        Marker m1 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Membre 1"));
-        Marker m2 = mMap.addMarker(new MarkerOptions().position(new LatLng(45, 0)).title("Membre 2"));
-        Marker m3 = mMap.addMarker(new MarkerOptions().position(new LatLng(0, 45)).title("Membre 3"));*/
-
-
-
+        //TODO ne marche peut etre pas
+        // si il ya des marker on centre la camera
+        if (nbMarkerSet>0) {
+            //Centrer la camera pour voir tous les markers
+         /*   LatLngBounds bounds = builder.build();
+            int padding = 0;
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+            mMap.moveCamera(cu);*/
+        }
 
     }
 
@@ -219,23 +214,22 @@ public class MapsActivity extends FragmentActivity implements
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+
         personnes.get("you").setPosition(latLng);
-        //TODO Le marker du chef sera pas mis à jour
-        //TODO c'est pas getItem("you")
         personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
-
-            Marker m = mMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .title("You"));
-        //TODO pourquoi en commentaire ?
-        //personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setMarker(m);
-
+        if (personnes.get("you").getMarker()!=null){
+            personnes.get("you").getMarker().position(latLng);
+        }
+        else{
+            Marker m = mMap.addMarker(new MarkerOptions().position(latLng).title("you"));
+            personnes.get("you").setMarker(m);
+        }
 
         if (personnes.get("you").message_needed()) {
             teamtreehouse.com.iamhere.Message message = new teamtreehouse.com.iamhere.Message(personnes.get("you"));
-            //TODO envoyer le message
+            //envoie de message LORA
             usbService.write(message.loraPayload());
-
+            //Envoie de message via le reseau
             Log.i("LORA", "envoi du message :" + message.toString());
             UltraTeamApplication.getInstance().getMqtt_client().publishMessage();
         }
@@ -244,7 +238,7 @@ public class MapsActivity extends FragmentActivity implements
 
         if(UltraTeamApplication.getInstance().getBase()==null){
 
-            m=mMap.addMarker(new MarkerOptions()
+            Marker m =mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
                     .title("Point de rdv")
                     .draggable(true)
@@ -355,24 +349,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private void updateMarker(String data) {
-//TODO pourquoi commenter ?
-       /* String id = null;
-        Double lat = null;
-        Double lon = null;
-
-        Hashtable<Integer, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-
-        if (p.containsKey(id)) {
-            listeDesMarkers.get(id).setPosition(new LatLng(lat, lon));
-        } else {
-            Marker m = mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(10, 10))
-                    .title("Position de " + id));
-            listeDesMarkers.put(Integer.getInteger(id), m);
-
-        }*/
-
-
+        //TODO peut etre reutiliser
     }
 
     // USB Fonctions
@@ -437,6 +414,7 @@ public class MapsActivity extends FragmentActivity implements
     private Personne getPersonneLaPlusProche(LatLng position){
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
+
         Personne personneLaplusProche = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0));
         double distanceChef= distance(personneLaplusProche.getPosition(), position);
 
@@ -467,6 +445,7 @@ public class MapsActivity extends FragmentActivity implements
     public boolean onMarkerClick(Marker marker) {
 
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+
         Log.i("CARTE", "title : " + marker.getTitle());
         if (!marker.getTitle().contains("Point de rdv")) {
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
@@ -480,7 +459,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
             marker.setSnippet("est à : " + getHumanDistance(distanceChef));
-            personneLaplusProche.getMarker().setSnippet("");
+            personneLaplusProche.getMarker().snippet("");
 
             double distanceMin = distance(personneLaplusProche.getPosition(),posMembre);
 
@@ -530,6 +509,9 @@ public class MapsActivity extends FragmentActivity implements
         setUpMapIfNeeded();
     }
 
+
+
+
     /*
      * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
      */
@@ -576,4 +558,63 @@ public class MapsActivity extends FragmentActivity implements
         }
     };
 
+
+    //gestion d'arrivée de message MQTT:
+
+    private final BroadcastReceiver mqttReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            //TODO faire quelque chose
+            Log.i("MQTT", "je decouvre que j'ai recu un message ");
+        }
+    };
+
+
+    private static IntentFilter mqttReceiverIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MqttServiceConstants.MESSAGE_ARRIVED_ACTION);
+        //intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        return intentFilter;
+    }
+
+
+    //gestion modification bluetooth
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                Personne personne= UltraTeamApplication.getInstance().getPersonnes().get("you");
+                Random random = new Random();
+                Double randomLat = random.nextDouble() * 2 - 1;
+                Double randomLon = random.nextDouble() * 2 - 1;
+                //Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
+                Double tmpLat= personne.getPosition().latitude+randomLat;
+                //Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
+                Double tmpLon= personne.getPosition().longitude+randomLon;
+                LatLng position = new LatLng(tmpLat, tmpLon);
+                personne.setMarker( mMap.addMarker(new MarkerOptions().position(position).title(personne.getNom())));
+                //listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
+                //listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
+                //Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
+
+                //listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
+            }
+        }
+    };
+
+
+    private static IntentFilter makeGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        return intentFilter;
+    }
+
+
+
 }
+
+
+
+

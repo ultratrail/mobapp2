@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean BLUETOOTH_SERVICE_REGISTER;
 
     public Button valider;
+    UltraTeamApplication ultraTeamApplication= UltraTeamApplication.getInstance();
+    Hashtable<String,Personne> personnes = ultraTeamApplication.getPersonnes();
 
 
     @Override
@@ -56,27 +59,31 @@ public class MainActivity extends AppCompatActivity {
         Mqtt_client mqtt_client = new Mqtt_client(getApplicationContext());
         ultraTeamApplication.setMqtt_client(mqtt_client);
 
+        //Bluetooth
         mDataField = (TextView) findViewById(R.id.data_value_service);
         setSupportActionBar(toolbar);
         if(BLUETOOTH_SERVICE_ACTIVE) {
             registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
             BLUETOOTH_SERVICE_REGISTER = true;
         }
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                //TODO
             }
         });
 
-        //TODO
+        //entre de coordonnées manuellement
         valider = (Button) findViewById(R.id.valider);
         valider.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Personne p = UltraTeamApplication.getInstance().getPersonnes().get("you");
+                //Personne p = UltraTeamApplication.getInstance().getPersonnes().get("you");
+                Personne p =personnes.get("you");
                 TextView latitude = (TextView) findViewById(R.id.latitude2);
                 TextView longitude = (TextView) findViewById(R.id.longitude);
                 double lat = Double.valueOf(latitude.getText().toString());
@@ -96,16 +103,20 @@ public class MainActivity extends AppCompatActivity {
                         unregisterReceiver(mGattUpdateReceiver);
                         BLUETOOTH_SERVICE_REGISTER = false;
                     }
-                    //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
-                    Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
+                    //TODO a changer
+                    //initialisation de la carte ... ajout des personnes de l'adapter dans la classes personne bizarre de faire ca
+                    //comme ca non ...
+
+
                     LatLng mexico = new LatLng(19, -99);
                     for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++) {
                         mexico = new LatLng(mexico.latitude + 1, mexico.longitude + 1);
-                        personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, mexico));
-
-                        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                        startActivity(intent);
+                        //je pense pas que ce soit utile
+                        //personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, mexico));
                     }
+                    //....
+                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                    startActivity(intent);
                 } else {
                     Context context = getApplicationContext();
                     CharSequence text = "La gestion des groupes n'est pas faites";
@@ -150,29 +161,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
-        /*sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                TextView tv = (TextView) findViewById(R.id.textViewNbMembre);
-                tv.setText(String.valueOf(seekBar.getProgress()));
-
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });*/
     }
 
+    //gestion des données bluetooth
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -182,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
+    //TODO traiter les données bluetooth
     private void displayData(String data) {
         if (data != null) {
             mDataField.setText(data);

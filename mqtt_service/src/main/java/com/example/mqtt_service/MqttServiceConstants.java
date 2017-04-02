@@ -16,7 +16,7 @@ package com.example.mqtt_service;
  * Various strings used to identify operations or data in the Android MQTT
  * service, mainly used in Intents passed between Activities and the Service.
  */
-interface MqttServiceConstants {
+public interface MqttServiceConstants {
 
 	/*
 	 * Version information
