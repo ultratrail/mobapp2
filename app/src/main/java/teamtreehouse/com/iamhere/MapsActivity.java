@@ -47,6 +47,8 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
+import static teamtreehouse.com.iamhere.MainActivity.BLUETOOTH_SERVICE_ACTIVE;
+
 
 public class MapsActivity extends FragmentActivity implements
         GoogleApiClient.ConnectionCallbacks,
@@ -54,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements
         LocationListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback {
 
     public static final String TAG = MapsActivity.class.getSimpleName();
+    private Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
     /*
      * Define a request code to send to Google Play services
@@ -67,12 +70,16 @@ public class MapsActivity extends FragmentActivity implements
     private LocationRequest mLocationRequest;
     private Polyline polylineChefAMarker;
     private Polyline polylineProcheAMarker;
+    public Hashtable<String, Marker> listeDesMarkers = new Hashtable<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         //setUpMapIfNeeded();
+        if (BLUETOOTH_SERVICE_ACTIVE) {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -92,8 +99,6 @@ public class MapsActivity extends FragmentActivity implements
 
         mHandler = new MyHandler(this);
 
-
-        //listeDesMarkers = new Hashtable<>();
 
 
     }
@@ -138,7 +143,6 @@ public class MapsActivity extends FragmentActivity implements
 
             if(mMap!=null)
                 setUpMap();
-
         } else {
             setUpMap();
         }
@@ -157,8 +161,6 @@ public class MapsActivity extends FragmentActivity implements
 
         int nombrePersonne = UltraTeamApplication.getInstance().getNbPersonnes();
 
-        Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-
         Random random = new Random();
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -170,8 +172,8 @@ public class MapsActivity extends FragmentActivity implements
 
             LatLng randomPosition = new LatLng(45.166672 + randomLat, 5.71667 + randomLon);
             Marker m = mMap.addMarker(new MarkerOptions().position(randomPosition).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).getNom()));
+            listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).getNom(), m);
             personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setMarker(m);
-
 
             personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(i)).setPosition(randomPosition);
 
@@ -338,8 +340,8 @@ public class MapsActivity extends FragmentActivity implements
 
 
     private void updateMarker(String data) {
-
-       /* String id = null;
+        /*
+        String id = null;
         Double lat = null;
         Double lon = null;
 
@@ -552,4 +554,29 @@ public class MapsActivity extends FragmentActivity implements
         }
     };
 
+    private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                Random random = new Random();
+                Double randomLat = random.nextDouble() * 2 - 1;
+                Double randomLon = random.nextDouble() * 2 - 1;
+                Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
+                Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
+                LatLng position = new LatLng(tmpLat, tmpLon);
+                listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
+                listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
+                Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
+                listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
+            }
+        }
+    };
+
+
+    private static IntentFilter makeGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
+        return intentFilter;
+    }
 }
