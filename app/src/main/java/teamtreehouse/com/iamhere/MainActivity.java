@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -80,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
                     Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
                     for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++)
                         personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, null));
+
+
+                    MediaPlayer m = MediaPlayer.create(getApplicationContext(), R.raw.enavant);
+                    m.start();
 
                         Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                         startActivity(intent);

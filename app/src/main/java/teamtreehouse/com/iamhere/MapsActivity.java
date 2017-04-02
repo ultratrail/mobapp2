@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -73,6 +74,7 @@ public class MapsActivity extends FragmentActivity implements
     private Polyline polylineChefAMarker;
     private Polyline polylineProcheAMarker;
     public Hashtable<String, Marker> listeDesMarkers = new Hashtable<>();
+    private MediaPlayer mediaplayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements
             registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         }
 
-        //mediaplayer = MediaPlayer.create(getApplicationContext(), R.raw.mort);
+        mediaplayer = MediaPlayer.create(getApplicationContext(), R.raw.mort);
 
         Button sosButton = (Button) findViewById(R.id.sosBouton);
         sosButton.setOnClickListener(new View.OnClickListener() {
@@ -114,7 +116,7 @@ public class MapsActivity extends FragmentActivity implements
                 toast.show();
 
 
-                //  mediaplayer.start();
+                mediaplayer.start();
             }
         });
 
