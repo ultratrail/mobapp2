@@ -44,6 +44,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Random;
@@ -236,26 +238,19 @@ public class MapsActivity extends FragmentActivity implements
 
         personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
 
-        Marker m = mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title("You"));
-
-        //personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setMarker(m);
-
-
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
 
 
         if(UltraTeamApplication.getInstance().getBase()==null){
 
-            m=mMap.addMarker(new MarkerOptions()
+          /*  m=mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
                     .title("Point de rdv")
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
-            UltraTeamApplication.getInstance().setBase(m);
+            UltraTeamApplication.getInstance().setBase(m);*/
 
 
         }
@@ -430,10 +425,12 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     String getHumanDistance(double distance){
+
+        NumberFormat nf = new DecimalFormat("0.###");
         if(distance<1000){
-            return distance + "m";
+            return nf.format(distance) + "m";
         } else {
-            return distance/1000 + "km";
+            return nf.format(distance / 1000) + "km";
         }
     }
 

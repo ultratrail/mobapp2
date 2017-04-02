@@ -62,6 +62,8 @@ class Personne {
     }
 
     public void setPosition(LatLng position) {
+
+        marker.setPosition(position);
         this.position = position;
         this.isPositionSet=true;
     }
