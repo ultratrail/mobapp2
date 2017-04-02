@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -119,6 +120,18 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button credit = (Button) findViewById(R.id.creditButton);
+        credit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uriUrl = Uri.parse("https://github.com/ultratrail/mobapp2/blob/master/README.md");
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(launchBrowser);
+            }
+        });
+
+
 
         //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
         /*sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
