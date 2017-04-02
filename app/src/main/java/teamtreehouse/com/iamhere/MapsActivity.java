@@ -244,13 +244,13 @@ public class MapsActivity extends FragmentActivity implements
 
         if(UltraTeamApplication.getInstance().getBase()==null){
 
-          /*  m=mMap.addMarker(new MarkerOptions()
+            Marker m = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(location.getLatitude()+1, location.getLongitude()))
                     .title("Point de rdv")
                     .draggable(true)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
 
-            UltraTeamApplication.getInstance().setBase(m);*/
+            UltraTeamApplication.getInstance().setBase(m);
 
 
         }
