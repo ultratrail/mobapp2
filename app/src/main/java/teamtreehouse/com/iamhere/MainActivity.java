@@ -1,24 +1,18 @@
 package teamtreehouse.com.iamhere;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mDataField;
     public static boolean BLUETOOTH_SERVICE_ACTIVE;
     private boolean BLUETOOTH_SERVICE_REGISTER;
+    private MediaPlayer mediaPlayer;
 
     public Button valider;
     UltraTeamApplication ultraTeamApplication= UltraTeamApplication.getInstance();
@@ -67,16 +62,6 @@ public class MainActivity extends AppCompatActivity {
             BLUETOOTH_SERVICE_REGISTER = true;
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                //TODO
-            }
-        });
-
         //entre de coordonnées manuellement
         valider = (Button) findViewById(R.id.valider);
         valider.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.enavant);
+
         Button goToMapActivity = (Button) findViewById(R.id.goToMapActivity);
         goToMapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,15 +96,11 @@ public class MainActivity extends AppCompatActivity {
                     //comme ca non ...
 
 
-                    LatLng mexico = new LatLng(19, -99);
-                    for (int i = 0; i < UltraTeamApplication.getInstance().getAdapter().getCount(); i++) {
-                        mexico = new LatLng(mexico.latitude + 1, mexico.longitude + 1);
-                        //je pense pas que ce soit utile
-                        //personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, mexico));
-                    }
-                    //....
-                    Intent intent = new Intent(MainActivity.this, MapsActivity.class);
-                    startActivity(intent);
+                    mediaPlayer.start();
+
+                        Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                        startActivity(intent);
+                    
                 } else {
                     Context context = getApplicationContext();
                     CharSequence text = "La gestion des groupes n'est pas faites";
@@ -161,6 +145,39 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        Button credit = (Button) findViewById(R.id.creditButton);
+        credit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uriUrl = Uri.parse("https://github.com/ultratrail/mobapp2/blob/master/README.md");
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(launchBrowser);
+            }
+        });
+
+
+
+        //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
+        /*sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                TextView tv = (TextView) findViewById(R.id.textViewNbMembre);
+                tv.setText(String.valueOf(seekBar.getProgress()));
+
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });*/
     }
 
     //gestion des données bluetooth

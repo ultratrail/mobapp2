@@ -112,6 +112,8 @@ final float distance = 1;
     }
 
     public void setPosition(LatLng position) {
+
+        marker.setPosition(position);
         this.position = position;
         this.isPositionSet=true;
         //TODO verifier que la map est refresh

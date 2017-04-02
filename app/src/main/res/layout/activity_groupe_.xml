@@ -14,14 +14,6 @@
     tools:context="Groupe_Activity"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Name"
-        android:inputType="textPersonName" />
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,33 +24,66 @@
         tools:showIn="@layout/activity_main">
 
 
-        <Button
-            android:id="@+id/Add_someone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:text="Add" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:weightSum="1"
+            android:id="@+id/layout1">
 
-        <Button
-            android:id="@+id/import_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:text="Import" />
+            <Button
+                android:id="@+id/import_group"
+                android:layout_width="wrap_content"
+                android:layout_height="100px"
 
-        <Button
-            android:id="@+id/create_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="Create" />
+                android:layout_weight="0.4"
+                android:drawableLeft="@android:drawable/stat_sys_download_done"
+                android:text="Import"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:id="@+id/create_group"
+                android:layout_width="wrap_content"
+                android:layout_height="100px"
+                android:layout_weight="0.6"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:drawableLeft="@android:drawable/ic_menu_save"
+                android:text="Enregistrer" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:weightSum="1"
+            android:layout_below="@id/layout1">
+
+
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/import_group"
+                android:layout_weight="0.75"
+                android:ems="10"
+                android:hint="Nom"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/Add_someone"
+                android:layout_width="150px"
+                android:layout_height="100px"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/create_group"
+                android:layout_weight="0.25"
+                android:background="@android:drawable/ic_input_add" />
+        </LinearLayout>
 
 
     </RelativeLayout>
+
 
     <TextView
         android:id="@+id/textView"

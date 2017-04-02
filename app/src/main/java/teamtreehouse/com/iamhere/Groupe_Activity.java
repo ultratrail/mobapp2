@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.PowerManager;
@@ -81,6 +82,17 @@ public class Groupe_Activity extends AppCompatActivity {
             }
         });
 
+        button_create_group = (Button) findViewById(R.id.create_group);
+        button_create_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Intent intent = new Intent(Groupe_Activity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
         button_add_someone = (Button) findViewById(R.id.Add_someone);
         button_add_someone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +121,7 @@ public class Groupe_Activity extends AppCompatActivity {
                     Toast toast = Toast.makeText(context, text, duration);
                     toast.show();
                 }
-
+                textView.setText("");
             }
         });
     }

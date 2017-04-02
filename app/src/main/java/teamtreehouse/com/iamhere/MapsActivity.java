@@ -10,6 +10,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -19,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.maps.model.RoundCap;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -78,17 +82,12 @@ public class MapsActivity extends FragmentActivity implements
     private Polyline polylineChefAMarker;
     private Polyline polylineProcheAMarker;
     public Hashtable<String, Marker> listeDesMarkers = new Hashtable<>();
+    private MediaPlayer mediaplayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        if (BLUETOOTH_SERVICE_ACTIVE){
-            registerReceiver(mGattUpdateReceiver,makeGattUpdateIntentFilter());
-        }
-
-        registerReceiver(mqttReceiver,mqttReceiverIntentFilter());
         //setUpMapIfNeeded();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -110,6 +109,25 @@ public class MapsActivity extends FragmentActivity implements
         if (BLUETOOTH_SERVICE_ACTIVE) {
             registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         }
+
+        mediaplayer = MediaPlayer.create(getApplicationContext(), R.raw.mort);
+
+        Button sosButton = (Button) findViewById(R.id.sosBouton);
+        sosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "La fonction SOS, n'a pas encore été faites, désolé pour toi.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+
+                mediaplayer.start();
+            }
+        });
+
 
     }
 
@@ -406,10 +424,12 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     String getHumanDistance(double distance){
+
+        NumberFormat nf = new DecimalFormat("0.###");
         if(distance<1000){
-            return distance + "m";
+            return nf.format(distance) + "m";
         } else {
-            return distance/1000 + "km";
+            return nf.format(distance / 1000) + "km";
         }
     }
 
@@ -591,6 +611,40 @@ public class MapsActivity extends FragmentActivity implements
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (!listeDesMarkers.isEmpty()) {
+                final String action = intent.getAction();
+                if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                    Random random = new Random();
+                    Double randomLat = random.nextDouble() * 2 - 1;
+                    Double randomLon = random.nextDouble() * 2 - 1;
+                    Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
+                    Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
+                    LatLng position = new LatLng(tmpLat, tmpLon);
+                    listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
+                    listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
+                    Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
+                    listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
+                    LatLng posChef = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
+
+                    LatLng posMembre = m.getPosition();
+                    if (markerCliked) {
+                        if (polylineChefAMarker != null) {
+                            polylineChefAMarker.remove();
+                        }
+
+                        PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
+
+                        polylineChefAMarker = mMap.addPolyline(polylineOptions);
+
+                        if (polylineProcheAMarker != null) {
+                            polylineProcheAMarker.remove();
+                        }
+
+                        polylineOptions = new PolylineOptions().add(getPersonneLaPlusProche(position).getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
+
+                        polylineProcheAMarker = mMap.addPolyline(polylineOptions);
+                    }
+                }
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
                 Personne personne= UltraTeamApplication.getInstance().getPersonnes().get("you");

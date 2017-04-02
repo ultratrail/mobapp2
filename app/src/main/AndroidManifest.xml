@@ -30,7 +30,6 @@
          Google Maps Android API v2, but are recommended.
     -->
 
-
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
@@ -57,13 +56,11 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
-        <activity android:name=".DeviceControlActivity"/>
+            android:label="@string/title_activity_maps"></activity>
+        <activity android:name=".DeviceControlActivity" />
         <activity
             android:name=".BluetoothActivity"
             android:label="@string/title_activity_bluetooth">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
