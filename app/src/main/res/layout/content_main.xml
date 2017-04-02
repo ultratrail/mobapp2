@@ -18,7 +18,7 @@
 
         android:layout_below="@+id/goToBluetoothActivity"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="86dp"
+        android:layout_marginTop="16dp"
         android:drawableLeft="@android:drawable/ic_menu_manage"
         android:text="Configurer un groupe" />
 
@@ -32,7 +32,7 @@
 
         android:layout_below="@+id/goToGroupActivity"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="5dp"
         android:drawableLeft="@drawable/ic_launcher"
         android:text="Démarrer " />
 
@@ -43,7 +43,7 @@
         android:layout_alignEnd="@+id/goToMapActivity"
         android:layout_alignStart="@+id/goToMapActivity"
         android:layout_below="@+id/goToMapActivity"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="5dp"
         android:drawableLeft="@android:drawable/ic_menu_help"
         android:text="Crédits" />
 
@@ -72,8 +72,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/goToMapActivity"
-        android:layout_marginTop="60dp"
+        android:layout_below="@+id/creditButton"
+        android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="numberSigned" />
 
@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/latitude2"
         android:layout_below="@+id/latitude2"
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="numberSigned" />
 
@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/latitude"
         android:layout_below="@+id/latitude2"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="10dp"
         android:text="Longitude" />
 
     <Button

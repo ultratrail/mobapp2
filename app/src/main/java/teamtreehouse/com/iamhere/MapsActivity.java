@@ -208,9 +208,7 @@ public class MapsActivity extends FragmentActivity implements
                     builder.include(e.getValue().getPosition());
                 }
                 else {
-                    e.getValue().getMarker().position(e.getValue().getPosition());
-                    mMap.addMarker(e.getValue().getMarker());
-
+                    e.getValue().setMarker(mMap.addMarker(new MarkerOptions().position(e.getValue().getPosition()).title(e.getValue().getNom())));
                     builder.include(e.getValue().getPosition());
                 }
             }
@@ -240,7 +238,7 @@ public class MapsActivity extends FragmentActivity implements
         personnes.get("you").setPosition(latLng);
         personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
         if (personnes.get("you").getMarker()!=null){
-            personnes.get("you").getMarker().position(latLng);
+            personnes.get("you").getMarker().setPosition(latLng);
         }
         else{
             Marker m = mMap.addMarker(new MarkerOptions().position(latLng).title("you"));
@@ -487,7 +485,7 @@ public class MapsActivity extends FragmentActivity implements
 
 
             marker.setSnippet("est à : " + getHumanDistance(distanceChef));
-            personneLaplusProche.getMarker().snippet("");
+            personneLaplusProche.getMarker().setSnippet("");
 
             double distanceMin = distance(personneLaplusProche.getPosition(),posMembre);
 
@@ -611,63 +609,46 @@ public class MapsActivity extends FragmentActivity implements
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!listeDesMarkers.isEmpty()) {
-                final String action = intent.getAction();
-                if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                    Random random = new Random();
-                    Double randomLat = random.nextDouble() * 2 - 1;
-                    Double randomLon = random.nextDouble() * 2 - 1;
-                    Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
-                    Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
-                    LatLng position = new LatLng(tmpLat, tmpLon);
-                    listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
-                    listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
-                    Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
-                    listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
-                    LatLng posChef = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
 
-                    LatLng posMembre = m.getPosition();
-                    if (markerCliked) {
-                        if (polylineChefAMarker != null) {
-                            polylineChefAMarker.remove();
-                        }
-
-                        PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
-
-                        polylineChefAMarker = mMap.addPolyline(polylineOptions);
-
-                        if (polylineProcheAMarker != null) {
-                            polylineProcheAMarker.remove();
-                        }
-
-                        polylineOptions = new PolylineOptions().add(getPersonneLaPlusProche(position).getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
-
-                        polylineProcheAMarker = mMap.addPolyline(polylineOptions);
-                    }
-                }
             final String action = intent.getAction();
             if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                Personne personne= UltraTeamApplication.getInstance().getPersonnes().get("you");
                 Random random = new Random();
                 Double randomLat = random.nextDouble() * 2 - 1;
                 Double randomLon = random.nextDouble() * 2 - 1;
-                //Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
-                Double tmpLat= personne.getPosition().latitude+randomLat;
-                //Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
-                Double tmpLon= personne.getPosition().longitude+randomLon;
+                Double tmpLat = personnes.get("you").getPosition().latitude + randomLat;
+                Double tmpLon = personnes.get("you").getPosition().longitude + randomLon;
                 LatLng position = new LatLng(tmpLat, tmpLon);
-                personne.setMarker( mMap.addMarker(new MarkerOptions().position(position).title(personne.getNom())));
-                //listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
-                //listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
-                //Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
+                personnes.get("you").getMarker().remove();
+                personnes.get("you").setMarker(null);
 
-                //listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
+                Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get("you").getNom()));
+                personnes.get("you").setMarker(m);
+                LatLng posChef = personnes.get("you").getPosition();
+
+                LatLng posMembre = m.getPosition();
+                if (markerCliked) {
+                    if (polylineChefAMarker != null) {
+                        polylineChefAMarker.remove();
+                    }
+
+                    PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
+
+                    polylineChefAMarker = mMap.addPolyline(polylineOptions);
+
+                    if (polylineProcheAMarker != null) {
+                        polylineProcheAMarker.remove();
+                    }
+
+                    polylineOptions = new PolylineOptions().add(getPersonneLaPlusProche(position).getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
+
+                    polylineProcheAMarker = mMap.addPolyline(polylineOptions);
+                }
             }
         }
     };
 
 
-    private static IntentFilter makeGattUpdateIntentFilter() {
+   private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothLeService.ACTION_DATA_AVAILABLE);
         return intentFilter;

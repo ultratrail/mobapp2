@@ -26,7 +26,7 @@ final float distance = 1;
     private int id;
     private boolean isPositionSet;
     private LatLng position;
-    private MarkerOptions marker;
+    private Marker marker;
     private LatLng oldPosition;
 
     public Date getDernier_message_recu() {
@@ -54,11 +54,11 @@ final float distance = 1;
         return isHeartRate;
     }
 
-    public MarkerOptions getMarker() {
+    public Marker getMarker() {
         return marker;
     }
 
-    public void setMarker(Marker markerOption) {
+    public void setMarker(Marker marker) {
         this.marker = marker;
     }
 
@@ -113,7 +113,7 @@ final float distance = 1;
 
     public void setPosition(LatLng position) {
 
-        marker.setPosition(position);
+       // marker.setPosition(position);
         this.position = position;
         this.isPositionSet=true;
         //TODO verifier que la map est refresh

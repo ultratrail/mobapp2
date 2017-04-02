@@ -122,7 +122,7 @@ public class UltraTeamApplication extends Application {
                     p.setPosition(message.getPos());
                     if (p.getMarker()!= null){
                         Log.i("MQTT", "je change le marker");
-                        p.getMarker().position(message.getPos());
+                        p.getMarker().setPosition(message.getPos());
                         
                     }
                     else {
