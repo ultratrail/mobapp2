@@ -19,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -99,6 +100,23 @@ public class MapsActivity extends FragmentActivity implements
             registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
         }
 
+        //mediaplayer = MediaPlayer.create(getApplicationContext(), R.raw.mort);
+
+        Button sosButton = (Button) findViewById(R.id.sosBouton);
+        sosButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "La fonction SOS, n'a pas encoré faites, désolé pour toi.";
+                int duration = Toast.LENGTH_SHORT;
+
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+
+                //  mediaplayer.start();
+            }
+        });
 
 
     }
