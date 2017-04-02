@@ -240,7 +240,8 @@ public class DeviceControlActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if( resourceId == 2131230845){
+                int tmp = resourceId;
+                if (resourceId == 2131296381) {
                     MainActivity.BLUETOOTH_SERVICE_ACTIVE = true;
                 }
                 else{
