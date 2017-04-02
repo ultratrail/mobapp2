@@ -1,29 +1,20 @@
 package teamtreehouse.com.iamhere;
 
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Hashtable;
 
 
@@ -31,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mDataField;
     public static boolean BLUETOOTH_SERVICE_ACTIVE;
     private boolean BLUETOOTH_SERVICE_REGISTER;
+    private MediaPlayer mediaPlayer;
 
 
     @Override
@@ -68,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.enavant);
+
         Button goToMapActivity = (Button) findViewById(R.id.goToMapActivity);
         goToMapActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +77,7 @@ public class MainActivity extends AppCompatActivity {
                         personnes.put(UltraTeamApplication.getInstance().getAdapter().getItem(i), new Personne(UltraTeamApplication.getInstance().getAdapter().getItem(i), i, null));
 
 
-                    MediaPlayer m = MediaPlayer.create(getApplicationContext(), R.raw.enavant);
-                    m.start();
+                    mediaPlayer.start();
 
                         Intent intent = new Intent(MainActivity.this, MapsActivity.class);
                         startActivity(intent);
