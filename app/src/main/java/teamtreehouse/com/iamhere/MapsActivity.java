@@ -62,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements
         LocationListener, GoogleMap.OnMarkerClickListener, OnMapReadyCallback{
 
     public static final String TAG = MapsActivity.class.getSimpleName();
+    private Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
     /*
      * Define a request code to send to Google Play services
@@ -73,8 +74,10 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private Boolean markerCliked = false;
     private Polyline polylineChefAMarker;
     private Polyline polylineProcheAMarker;
+    public Hashtable<String, Marker> listeDesMarkers = new Hashtable<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +90,6 @@ public class MapsActivity extends FragmentActivity implements
 
         registerReceiver(mqttReceiver,mqttReceiverIntentFilter());
         //setUpMapIfNeeded();
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -105,6 +107,9 @@ public class MapsActivity extends FragmentActivity implements
 
 
         mHandler = new MyHandler(this);
+        if (BLUETOOTH_SERVICE_ACTIVE) {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        }
 
     }
 
@@ -148,7 +153,6 @@ public class MapsActivity extends FragmentActivity implements
 
             if(mMap!=null)
                 setUpMap();
-
         } else {
             setUpMap();
         }
@@ -254,27 +258,26 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         //if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
 
         // return;
-       // }
-         try {
-             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-             if (location == null) {
-                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-             } else {
-                 handleNewLocation(location);
-             }
-         }
-         catch (SecurityException s){
-             //TODO
-         }
+        // }
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            } else {
+                handleNewLocation(location);
+            }
+        } catch (SecurityException s) {
+            //TODO
+        }
     }
 
     @Override
@@ -448,6 +451,11 @@ public class MapsActivity extends FragmentActivity implements
 
         Log.i("CARTE", "title : " + marker.getTitle());
         if (!marker.getTitle().contains("Point de rdv")) {
+
+            if (personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom().equals(marker.getTitle()))
+                markerCliked = true;
+            else
+                markerCliked = false;
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
             LatLng posChef  = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
