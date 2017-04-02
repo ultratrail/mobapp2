@@ -68,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private Boolean markerCliked = false;
     private Polyline polylineChefAMarker;
     private Polyline polylineProcheAMarker;
     public Hashtable<String, Marker> listeDesMarkers = new Hashtable<>();
@@ -77,10 +78,6 @@ public class MapsActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         //setUpMapIfNeeded();
-        if (BLUETOOTH_SERVICE_ACTIVE) {
-            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
-        }
-
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -98,6 +95,9 @@ public class MapsActivity extends FragmentActivity implements
 
 
         mHandler = new MyHandler(this);
+        if (BLUETOOTH_SERVICE_ACTIVE) {
+            registerReceiver(mGattUpdateReceiver, makeGattUpdateIntentFilter());
+        }
 
 
 
@@ -216,9 +216,9 @@ public class MapsActivity extends FragmentActivity implements
 
         personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setPosition(latLng);
 
-            Marker m = mMap.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .title("You"));
+        Marker m = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("You"));
 
         //personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).setMarker(m);
 
@@ -245,27 +245,26 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         //if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+        // TODO: Consider calling
+        //    ActivityCompat#requestPermissions
+        // here to request the missing permissions, and then overriding
+        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+        //                                          int[] grantResults)
+        // to handle the case where the user grants the permission. See the documentation
+        // for ActivityCompat#requestPermissions for more details.
 
         // return;
-       // }
-         try {
-             Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-             if (location == null) {
-                 LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-             } else {
-                 handleNewLocation(location);
-             }
-         }
-         catch (SecurityException s){
-             //TODO
-         }
+        // }
+        try {
+            Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (location == null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            } else {
+                handleNewLocation(location);
+            }
+        } catch (SecurityException s) {
+            //TODO
+        }
     }
 
     @Override
@@ -454,6 +453,10 @@ public class MapsActivity extends FragmentActivity implements
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
 
         if (!marker.getTitle().contains("Point de rdv")) {
+            if (personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom().equals(marker.getTitle()))
+                markerCliked = true;
+            else
+                markerCliked = false;
             //Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
             LatLng posChef  = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
 
@@ -557,18 +560,40 @@ public class MapsActivity extends FragmentActivity implements
     private final BroadcastReceiver mGattUpdateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
-                Random random = new Random();
-                Double randomLat = random.nextDouble() * 2 - 1;
-                Double randomLon = random.nextDouble() * 2 - 1;
-                Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
-                Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
-                LatLng position = new LatLng(tmpLat, tmpLon);
-                listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
-                listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
-                Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
-                listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
+            if (!listeDesMarkers.isEmpty()) {
+                final String action = intent.getAction();
+                if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action)) {
+                    Random random = new Random();
+                    Double randomLat = random.nextDouble() * 2 - 1;
+                    Double randomLon = random.nextDouble() * 2 - 1;
+                    Double tmpLat = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().latitude + randomLat;
+                    Double tmpLon = listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition().longitude + randomLon;
+                    LatLng position = new LatLng(tmpLat, tmpLon);
+                    listeDesMarkers.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).remove();
+                    listeDesMarkers.remove(UltraTeamApplication.getInstance().getAdapter().getItem(0));
+                    Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom()));
+                    listeDesMarkers.put(personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getNom(), m);
+                    LatLng posChef = personnes.get(UltraTeamApplication.getInstance().getAdapter().getItem(0)).getPosition();
+
+                    LatLng posMembre = m.getPosition();
+                    if (markerCliked) {
+                        if (polylineChefAMarker != null) {
+                            polylineChefAMarker.remove();
+                        }
+
+                        PolylineOptions polylineOptions = new PolylineOptions().add(posChef).add(posMembre).color(0xFFFF0000).startCap(new RoundCap()).endCap(new RoundCap());
+
+                        polylineChefAMarker = mMap.addPolyline(polylineOptions);
+
+                        if (polylineProcheAMarker != null) {
+                            polylineProcheAMarker.remove();
+                        }
+
+                        polylineOptions = new PolylineOptions().add(getPersonneLaPlusProche(position).getPosition()).add(posMembre).color(0xFF0000FF).startCap(new RoundCap()).endCap(new RoundCap());
+
+                        polylineProcheAMarker = mMap.addPolyline(polylineOptions);
+                    }
+                }
             }
         }
     };
