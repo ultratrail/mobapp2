@@ -30,16 +30,14 @@ import java.util.Map;
 public class Mqtt_client  {
     MqttAndroidClient mqttAndroidClient;
 
-    // final String serverUri = "tcp://iot.eclipse.org:1883"; //TODO c'est la bonne ?
-    //final String serverUri = "vps364763.ovh.net";
     final String serverUri = "tcp://vps364763.ovh.net:1883";
-    String clientId = UltraTeamApplication.getInstance().monID; //TODO faire en sorte que ce soit lier a l'ID de la personnes
-    final String subscriptionTopic = "exampleAndroidTopic";
+    String clientId = UltraTeamApplication.getInstance().monID;
+  //  final String subscriptionTopic = "exampleAndroidTopic";
     final String publishTopic = clientId;
-    final String publishMessage = "Hello World!";
+    //final String publishMessage = "Hello World!";
     UltraTeamApplication ultraTeamApplication = UltraTeamApplication.getInstance();
 
-
+    public MyCallBack callback;
 
     public Mqtt_client(Context applicationContext){
         //clientId = clientId + System.currentTimeMillis();
@@ -71,14 +69,13 @@ public class Mqtt_client  {
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 Log.i("MQTT","Incoming message: " + new String(message.getPayload()));
-                Log.i("MQTT","Incoming message:" + new teamtreehouse.com.iamhere.Message(new String(message.getPayload())).toString());
-                //TODO en faire quelque chose
-                //Recuperer les info dans le message.
+                Log.i("MQTT","Incoming message:");
 
+                //Message message2 = new Message(message.getPayload());
                 Message message2 = new Message(message.getPayload());
                 UltraTeamApplication.getInstance().traiterMessage(message2);
-
-                //addToHistory("Incoming message: " + new String(message.getPayload()));
+                //callback.callbackCall();
+                callback.callbackCall(UltraTeamApplication.getInstance().getPersonnes().get("Romane"));//TODO
             }
 
             @Override
@@ -104,16 +101,13 @@ public class Mqtt_client  {
                     disconnectedBufferOptions.setBufferSize(100);
                     disconnectedBufferOptions.setPersistBuffer(false);
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
-                   //TODO peut etre a reenlever
                      mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
-                    //subscribeToTopic();
                     subscribeToallTopic();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Log.i("MQTT","Failed to connect to: " + serverUri);
-                    //addToHistory("Failed to connect to: " + serverUri);
                 }
             });
 
@@ -124,7 +118,7 @@ public class Mqtt_client  {
 
     }
 
-    public void subscribeToTopic(){
+  /*  public void subscribeToTopic(){
         try {
             mqttAndroidClient.subscribe("ultratrail/"+subscriptionTopic, 0, null, new IMqttActionListener() {
                 @Override
@@ -149,6 +143,7 @@ public class Mqtt_client  {
                     System.out.println("Message: " + topic + " : " + new String(message.getPayload()));
                     Message message2 = new Message(message.getPayload());
                     UltraTeamApplication.getInstance().traiterMessage(message2);
+                    callback.callbackCall(UltraTeamApplication.getInstance().getPersonnes().get("Romane"));//TODO
                 }
             });
 
@@ -157,7 +152,7 @@ public class Mqtt_client  {
             ex.printStackTrace();
         }
     }
-
+*/
     public void subscribeToTopic(final String topic){
         try {
             Log.i("MQTT","tentative de soubscription "+ topic);
@@ -165,18 +160,16 @@ public class Mqtt_client  {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Log.i("MQTT","Subscribed!"+ topic);
-                    //addToHistory("Subscribed!");
                     publishMessage();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Log.i("MQTT","Failed to subscribe"+topic);
-                    //addToHistory("Failed to subscribe");
                 }
             });
 
-            // THIS DOES NOT WORK!
+
             mqttAndroidClient.subscribe(topic, 0, new IMqttMessageListener() {
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
@@ -185,6 +178,7 @@ public class Mqtt_client  {
                     System.out.println("Message: " + topic + " : " + new String(message.getPayload()));
                     Message message2 = new Message(message.getPayload());
                     UltraTeamApplication.getInstance().traiterMessage(message2);
+                    callback.callbackCall(UltraTeamApplication.getInstance().getPersonnes().get("Romane"));//TODO
                 }
             });
 
@@ -198,34 +192,59 @@ public class Mqtt_client  {
         Log.i("MQTT", "je souscrit a tous les topics");
         //parcour la hastable
         for (Map.Entry<String,Personne> e : UltraTeamApplication.getInstance().getPersonnes().entrySet()){
-            subscribeToTopic(e.getValue().getNom());
+            if (e.getValue().getNom()!= UltraTeamApplication.getInstance().monID) {
+                subscribeToTopic(e.getValue().getNom());
+            }
         }
     }
 
 
-    public void publishMessage(){
-
-        try {
-            MqttMessage message = new MqttMessage();
-            if (UltraTeamApplication.getInstance().getPersonnes().containsKey("you")) {
-                Personne personne = UltraTeamApplication.getInstance().getPersonnes().get("you");
-                if (personne.isPositionSet()) {
-                    LatLng l = UltraTeamApplication.getInstance().getPersonnes().get("you").getPosition();
-                    Message m = new Message(UltraTeamApplication.getInstance().getPersonnes().get("you"));
-                    //m.setNom(UltraTeamApplication.getInstance().monID);
-                    message.setPayload(m.loraPayload());
-                    //message.setPayload(publishMessage.getBytes());
-                    mqttAndroidClient.publish(publishTopic, message);// TODO bizarre
-                    Log.i("MQTT", "Message Published...  " + publishTopic + " : " + message);
-                } else Log.i("MQTT", "je sais pas ou je suis \n");
-                if (!mqttAndroidClient.isConnected()) {
-                    Log.i("MQTT", mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
-                    //addToHistory(mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
-                }
+/*    public void publishMessage(){
+        MqttMessage message = new MqttMessage();
+        if (UltraTeamApplication.getInstance().getPersonnes().containsKey("you")) {
+            Personne personne = UltraTeamApplication.getInstance().getPersonnes().get("you");
+            if (personne.isPositionSet()) {
+                LatLng l = UltraTeamApplication.getInstance().getPersonnes().get("you").getPosition();
+                Message m = new Message(UltraTeamApplication.getInstance().getPersonnes().get("you"));
+                //m.setNom(UltraTeamApplication.getInstance().monID);
+                message.setPayload(m.loraPayload());
+                //message.setPayload(publishMessage.getBytes());
+                //mqttAndroidClient.publish(publishTopic, message);
+                Log.i("MQTT", "Message Published...  " + publishTopic + " : " + message);
+            } else Log.i("MQTT", "je sais pas ou je suis \n");
+            if (!mqttAndroidClient.isConnected()) {
+                Log.i("MQTT", mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
+                //addToHistory(mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
             }
-        } catch (MqttException e) {
-            System.err.println("Error Publishing: " + e.getMessage());
-            e.printStackTrace();
+        }
+    }*/
+
+    public void publishMessage(){
+        publishMessage("you");
+    }
+
+
+    public void publishMessage(String p){
+        MqttMessage message = new MqttMessage();
+
+        if (UltraTeamApplication.getInstance().getPersonnes().containsKey(p)) {
+            Personne personne = UltraTeamApplication.getInstance().getPersonnes().get(p);
+            if (personne.isPositionSet()) {
+                LatLng l = UltraTeamApplication.getInstance().getPersonnes().get(p).getPosition();
+                Message m = new Message(UltraTeamApplication.getInstance().getPersonnes().get(p));
+                message.setPayload(m.loraPayload());
+                try {
+                    mqttAndroidClient.publish("ultratrail/"+publishTopic, message);
+                    Log.i("MQTT", "Message Published...  " + publishTopic + " : " + message);
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+
+            }
+                if (!mqttAndroidClient.isConnected()) {
+                Log.i("MQTT", mqttAndroidClient.getBufferedMessageCount() + " messages in buffer.");
+
+            }
         }
     }
 

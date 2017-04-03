@@ -1,5 +1,7 @@
 package teamtreehouse.com.iamhere;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -11,7 +13,7 @@ import java.util.Date;
  */
 
 class Personne {
-//TODO ajouter le rythme cardiaque
+
 final float distance = 1;
 
     public String getNom() {
@@ -28,6 +30,10 @@ final float distance = 1;
     private LatLng position;
     private Marker marker;
     private LatLng oldPosition;
+    private Date dernier_message_recu= new Date((long)0);
+    private int HeartRate;
+    private boolean isHeartRate;
+
 
     public Date getDernier_message_recu() {
         return dernier_message_recu;
@@ -36,11 +42,6 @@ final float distance = 1;
     public void setDernier_message_recu(Date dernier_message_recu) {
         this.dernier_message_recu = dernier_message_recu;
     }
-
-    private Date dernier_message_recu= new Date((long)0);
-    private int HeartRate;
-    private boolean isHeartRate;
-
     public int getHeartRate() {
         return HeartRate;
     }
@@ -68,7 +69,6 @@ final float distance = 1;
         this.position = position;
         this.isPositionSet=true;
         this.isHeartRate = false;
-
     }
 
     public Personne(String nom, int id) {
@@ -79,12 +79,10 @@ final float distance = 1;
     }
 
     public boolean message_needed() {
-//        float distance_temp = (position.latitude - oldPosition.latitude) >= distance || (position.longitude - oldPosition.longitude) >= distance; TODO, faire une jolie distance
         if (oldPosition == null) {
             oldPosition = position;
             return true;
         }
-
         boolean b = (position.latitude - oldPosition.latitude) >= distance || (position.longitude - oldPosition.longitude) >= distance;
         if (b) {
             oldPosition = position;
@@ -93,7 +91,6 @@ final float distance = 1;
     }
 
     public Personne(int id) {
-
         this.id = id;
         this.isPositionSet=false;
         this.isHeartRate = false;
@@ -112,20 +109,17 @@ final float distance = 1;
     }
 
     public void setPosition(LatLng position) {
-
-       // marker.setPosition(position);
         this.position = position;
         this.isPositionSet=true;
-        //TODO verifier que la map est refresh
-        //envoyer un message mqtt
-        UltraTeamApplication.getInstance().getMqtt_client().publishMessage();
-
-        //peut necesite de rajouter le marqueur a la map...
-
+        if (this.nom!= UltraTeamApplication.getInstance().monID) {
+            Log.i("MQTT","je publie sans mon nom");
+            //UltraTeamApplication.getInstance().getMqtt_client().publishMessage(this.getNom());
+        }
+        else {
+            //UltraTeamApplication.getInstance().getMqtt_client().publishMessage();
+            Log.i("MQTT", "je publie en mon nom");
+        }
     }
-
-
-
 
     public boolean isPositionSet() {
         return isPositionSet;

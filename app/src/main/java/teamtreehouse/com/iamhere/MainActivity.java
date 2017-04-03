@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 double lon = Double.valueOf(longitude.getText().toString());
                 LatLng latLng = new LatLng(lat, lon);
                 p.setPosition(latLng);
+                UltraTeamApplication.getInstance().getMqtt_client().publishMessage();
             }
         });
 
@@ -91,11 +92,6 @@ public class MainActivity extends AppCompatActivity {
                         unregisterReceiver(mGattUpdateReceiver);
                         BLUETOOTH_SERVICE_REGISTER = false;
                     }
-                    //TODO a changer
-                    //initialisation de la carte ... ajout des personnes de l'adapter dans la classes personne bizarre de faire ca
-                    //comme ca non ...
-
-
                     mediaPlayer.start();
 
                         Intent intent = new Intent(MainActivity.this, MapsActivity.class);
@@ -156,28 +152,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-        //SeekBar sb = (SeekBar) findViewById(R.id.seekBarNombreMembre);
-        /*sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                TextView tv = (TextView) findViewById(R.id.textViewNbMembre);
-                tv.setText(String.valueOf(seekBar.getProgress()));
-
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });*/
     }
 
     //gestion des données bluetooth
@@ -190,13 +164,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-    //TODO traiter les données bluetooth
     private void displayData(String data) {
         if (data != null) {
             mDataField.setText(data);
         }
     }
-
 
     private static IntentFilter makeGattUpdateIntentFilter() {
         final IntentFilter intentFilter = new IntentFilter();

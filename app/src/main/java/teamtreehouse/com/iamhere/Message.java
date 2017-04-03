@@ -60,10 +60,8 @@ public class Message {
     public Message() {
         if (ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN)) {
             byteOrder = ByteOrder.BIG_ENDIAN;
-            System.out.println("big");
         } else {
             byteOrder = ByteOrder.LITTLE_ENDIAN;
-            System.out.println("little");
         }
 
         options = 0;
@@ -84,7 +82,6 @@ public class Message {
         byte res = 0;
         for (int i = 0; i < 43; i++) {
             res += payload[i];
-            System.out.println("i : " + i + " res = " + res);
         }
 
 
@@ -115,10 +112,6 @@ public class Message {
         byte check2 = checksum2(payloadReceived);
         byte check3 = checksum3(payloadReceived);
 
-        System.out.println("check1 = " + check1 + " payload says : " + payloadReceived[43]);
-        System.out.println("check2 = " + check2 + " payload says : " + payloadReceived[44]);
-        System.out.println("check3 = " + check3 + " payload says : " + payloadReceived[45]);
-
         boolean res = check1 == payloadReceived[43];
         res = res && (check2 == payloadReceived[44]);
         res = res && (check3 == payloadReceived[45]);
@@ -128,20 +121,13 @@ public class Message {
 
 
     public boolean checked() {
-        // TODO Auto-generated method stub
         return checked;
     }
 
-    /*
-    not tested yet
-     */
     public void setSOS() {
         options = (byte) (options | 0x1);
     }
 
-    /*
-    Not tested yet
-     */
     public void setBlueTooth_HeartRate() {
         options = (byte) (options | 0x2);
     }
@@ -206,14 +192,13 @@ public class Message {
 
 
     public byte[] loraPayload() {
-        // TODO Auto-generated method stub
+
         if (loraPayload==null){makeLoraPayload();}
         return loraPayload;
     }
 
 
     public void setOptions(Byte byte1) {
-        // TODO Auto-generated method stub
         options = byte1;
     }
 
@@ -227,7 +212,6 @@ public class Message {
     public Message(Personne p) {
         this.nom = p.getNom();
         this.coord = p.getPosition();
-//TODO        this.heartRate = p.getHeartRate();
         setDate(new Date());
         this.options = 0;
 
@@ -264,11 +248,8 @@ public class Message {
         return "Nom :" + nom + "\nPos" + coord.toString() + "\nheart rate" + heartRate + "\nsos" + isSOS() + "\nbluetooth->heartRate" + isHeartRate() + "\nseq : " + getSeq() + "\ntime :" + getDate()+"\nchecked: "+checked();
     }
 
-
-    //TODO can be optimized but easier to understand this way.
     public void makeLoraPayload() {
         loraPayload = new byte[51];
-        //TODO set options
         loraPayload[0] = options;
 
         byte[] idBytes = nom.getBytes();
@@ -282,7 +263,6 @@ public class Message {
             loraPayload[i + 21] = posBytes[i];
         }
 
-        //TODO tests must be ran
         byte heartRateByte;
         byte[] hhmmss = new byte[3];
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
@@ -299,8 +279,6 @@ public class Message {
         }
 
         loraPayload[37] = heartRateByte;
-
-        System.out.println("heartRate = " + loraPayload[37]);
 
         byte[] seqByte = new byte[2];
 
@@ -344,7 +322,6 @@ public class Message {
         coord = getLatLngFromBytes(bytesReceived, 21);
 
 
-        //TODO tests must be ran
         byte heartRateByte = bytesReceived[37];
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
             heartRate = (short) ((heartRateByte & 0xFF));
@@ -386,7 +363,6 @@ public class Message {
             yBytes[i] = payload[i + index_data + 8];
         }
 
-        //TODO verify if this is ok without checking endians
         double x = bytesToDouble(xBytes);
         double y = bytesToDouble(yBytes);
         return new LatLng(x, y);

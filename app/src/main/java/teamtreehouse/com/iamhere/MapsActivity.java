@@ -83,12 +83,43 @@ public class MapsActivity extends FragmentActivity implements
     private Polyline polylineProcheAMarker;
     public Hashtable<String, Marker> listeDesMarkers = new Hashtable<>();
     private MediaPlayer mediaplayer;
+    private Mqtt_client mqtt_client =UltraTeamApplication.getInstance().getMqtt_client();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        //setUpMapIfNeeded();
+        mqtt_client.callback = new MyCallBack() {
+            @Override
+            public void callbackCall() {
+                //TODO mettre a jour la carte
+                Log.i("CARTE ", "on entre dans la call BACK" + personnes.toString() + "\n" + personnes.entrySet());
+                for (Map.Entry<String, Personne> e : personnes.entrySet()) {
+                    Log.i("CARTE", "je change le marker de " + e.getValue().getNom() + " et je le mets en " + e.getValue().getPosition());
+                    //if (e.getValue().getMarker()!=null) {
+                    e.getValue().getMarker().remove();
+                    e.getValue().setMarker(null);
+                    e.getValue().setMarker(mMap.addMarker(new MarkerOptions().position(e.getValue().getPosition()).title(e.getValue().getNom())));
+
+
+                }
+            }
+
+            @Override
+            public void callbackCall(Personne personne) {
+                Log.i("CARTE", "2je change le marker de " + personne.getNom() + " et je le mets en " + personne.getPosition());
+                // personne.getMarker().setPosition(personne.getPosition());
+                personne.getMarker().remove();
+                personne.setMarker(null);
+                mMap.clear();
+                personne.setMarker(mMap.addMarker(new MarkerOptions().position(personne.getPosition()).title(personne.getNom())));
+
+
+            }
+
+
+        };
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -184,18 +215,8 @@ public class MapsActivity extends FragmentActivity implements
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-
-
-        int nombrePersonne = UltraTeamApplication.getInstance().getNbPersonnes();
-
         Hashtable<String, Personne> personnes = UltraTeamApplication.getInstance().getPersonnes();
-        
-        Random random = new Random();
-
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-
-
 
         //nombre de marker que l'on positionne
         int nbMarkerSet=0;
@@ -213,14 +234,14 @@ public class MapsActivity extends FragmentActivity implements
                 }
             }
         }
-        //TODO ne marche peut etre pas
+
         // si il ya des marker on centre la camera
-        if (nbMarkerSet>0) {
+        if (nbMarkerSet>1) {
             //Centrer la camera pour voir tous les markers
-         /*   LatLngBounds bounds = builder.build();
+            LatLngBounds bounds = builder.build();
             int padding = 0;
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-            mMap.moveCamera(cu);*/
+            mMap.moveCamera(cu);
         }
 
     }
@@ -274,7 +295,6 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         //if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        // TODO: Consider calling
         //    ActivityCompat#requestPermissions
         // here to request the missing permissions, and then overriding
         //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
@@ -292,7 +312,6 @@ public class MapsActivity extends FragmentActivity implements
                 handleNewLocation(location);
             }
         } catch (SecurityException s) {
-            //TODO
         }
     }
 
@@ -337,7 +356,6 @@ public class MapsActivity extends FragmentActivity implements
 
 
     // USB
-
 
     /*
     * Notifications from UsbService will be received here.
@@ -460,8 +478,6 @@ public class MapsActivity extends FragmentActivity implements
     }
 
 
-
-
     @Override
     public boolean onMarkerClick(Marker marker) {
 
@@ -534,8 +550,6 @@ public class MapsActivity extends FragmentActivity implements
         mMap.setOnMarkerClickListener(this);
         setUpMapIfNeeded();
     }
-
-
 
 
     /*
@@ -617,12 +631,13 @@ public class MapsActivity extends FragmentActivity implements
                 Double randomLon = random.nextDouble() * 2 - 1;
                 Double tmpLat = personnes.get("you").getPosition().latitude + randomLat;
                 Double tmpLon = personnes.get("you").getPosition().longitude + randomLon;
-                LatLng position = new LatLng(tmpLat, tmpLon);
-                personnes.get("you").getMarker().remove();
-                personnes.get("you").setMarker(null);
+                //LatLng position = new LatLng(tmpLat, tmpLon);
+                //personnes.get("you").getMarker().remove();
+                //personnes.get("you").setMarker(null);
+                LatLng position = personnes.get("you").getPosition();
 
                 Marker m = mMap.addMarker(new MarkerOptions().position(position).title(personnes.get("you").getNom()));
-                personnes.get("you").setMarker(m);
+                //personnes.get("you").setMarker(m);
                 LatLng posChef = personnes.get("you").getPosition();
 
                 LatLng posMembre = m.getPosition();

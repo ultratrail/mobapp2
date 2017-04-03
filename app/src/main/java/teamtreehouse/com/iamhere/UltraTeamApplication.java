@@ -25,8 +25,8 @@ public class UltraTeamApplication extends Application {
     private static UltraTeamApplication singleton;
 
     public GroupeAdapter adapter;
-    public String monID ="Romane";
-
+   //public String monID ="Romane";
+  public String monID ="Alexandre";
     public static UltraTeamApplication getInstance(){
         return singleton;
     }
@@ -35,7 +35,7 @@ public class UltraTeamApplication extends Application {
         super.onCreate();
         personnes=new Hashtable<>();
 
-        personnes.put("you", new Personne(monID, 0));//TODO arrêter de faire n'importe quoi
+        personnes.put("you", new Personne(monID, 0));
         singleton = this;
         groupeInitialized = false;
     }
@@ -46,11 +46,6 @@ public class UltraTeamApplication extends Application {
     public int getNbPersonnes(){
         return personnes.size();
     }
-
-   /* public Hashtable<String, Personne> getPersonnes (){
-        return personnes;
-    }*/
-
 
     private Marker base;
     public Mqtt_client getMqtt_client() {
@@ -88,13 +83,11 @@ public class UltraTeamApplication extends Application {
             personnes.put(s,new Personne(s,0,l));
         }
         else personnes.get(s).setPosition(l);
-        // TODO necesite de faire quelque chose avec le marker
     }
 
     public void remove_someone(String s){
         personnes.remove(s);
         //mqtt_client.unsubscribe(s);
-        //TODO possible problemme avec le marker
     }
 
 
@@ -122,24 +115,20 @@ public class UltraTeamApplication extends Application {
                     p.setPosition(message.getPos());
                     if (p.getMarker()!= null){
                         Log.i("MQTT", "je change le marker");
-                        p.getMarker().setPosition(message.getPos());
+                       // p.getMarker().setPosition(message.getPos());
                         
                     }
                     else {
                         Log.i("MQTT","traitement de message j'ai recu la position de quelqu'un qui n'as pas de marker");
                     }
                     if (message.isSOS()) {
-                        //TODO faire quelque chose
+                        //TODO
                     }
                     if (message.isHeartRate()) {
                         p.setHeartRate(message.getHeartRate());
                     }
                     p.setDernier_message_recu(message.getDate());
                 }
-
-
-
-
 
             }
             else {
